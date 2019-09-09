@@ -1,6 +1,6 @@
 import * as React from "react"
 import Layout from "../components/Layout"
-import Dashboard from "../components/Dashboard"
+import Dashboard from "../containers/Dashboard"
 import { NextPage } from "next"
 import { Provider } from "react-redux"
 import { store } from "../containers/store"
