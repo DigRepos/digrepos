@@ -1,6 +1,6 @@
 import * as React from "react"
 import Head from "next/head"
-import styled from "styled-components"
+import styled from "../interfaces/styled-theme"
 
 type Props = {
   title?: string
@@ -13,9 +13,9 @@ const HeaderWrapper = styled.header`
   top: 0;
   left: 0;
   width: 100vw;
-  height: 72px;
+  height: 40px;
   padding: 24px;
-  border-bottom-color: #e0e0e0;
+  border-color: #FFFFFF #FFFFFF #EEEEEE #FFFFFF;
   background-color: #FFFFFF;
   z-index: 100;
 `
