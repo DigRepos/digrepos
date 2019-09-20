@@ -1,7 +1,7 @@
 import * as React from "react"
 import { RepositoryData } from "../interfaces"
-import styled from "styled-components"
-import Panel from "./Panel/Panel"
+import styled from "../interfaces/styled-theme"
+import Panel from "./Panel"
 
 type Props = {
   repositoryDatas: RepositoryData[]
