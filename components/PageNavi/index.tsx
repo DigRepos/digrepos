@@ -1,5 +1,5 @@
 import * as React from "react"
-import styled from "styled-components"
+import styled from "../../interfaces/styled-theme"
 
 type Props = {
   pageNum: number
@@ -41,6 +41,7 @@ const PageNavi: React.FC<Props> = props => {
   const handlePageNoClicked = (e: React.MouseEvent<HTMLDivElement>) => {
     const pageNo = e.currentTarget.innerText
     props.setNowPage(Number(pageNo))
+    scrollTo(0, 0)
   }
   const MAX_PAGE = 5
   let pageNoArray: string[] = []
@@ -54,7 +55,7 @@ const PageNavi: React.FC<Props> = props => {
   return (
     <PageNaviArea>
       {pageNoArray.map((v, i) => (
-        <PageNo key={i} onClick={e => handlePageNoClicked(e)}>
+        <PageNo className={'page-no'} key={i} onClick={e => handlePageNoClicked(e)}>
           {v}
         </PageNo>
       ))}
