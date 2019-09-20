@@ -1,9 +1,18 @@
 import * as React from "react"
 import RepositoryList from "./RepositoryList"
 import PageNavi from "./PageNavi"
-import { RepositoryData } from "../interfaces"
-import styled from "styled-components"
+import {
+  RepositoryData,
+  ModalStyle,
+  ModalOverlayStyle,
+  SearchFilterModel
+} from "../interfaces"
+import styled from "../interfaces/styled-theme"
 import { fetchRepositoryList } from "../api"
+import Modal from "./Modal"
+import SearchFilter from "./SearchFilter"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSearchPlus } from "@fortawesome/free-solid-svg-icons"
 
 const DashboardOutline = styled.div`
   width: 90%;
@@ -33,6 +42,28 @@ const Right = styled.div`
   padding: 8px;
 `
 
+const SearchFloatingButton = styled.button`
+  position: fixed;
+  top: 18%;
+  left: 10%;
+  width: 88px;
+  height: 48px;
+  padding: 8px;
+  border-radius: 12px;
+  border-style: none;
+  background-color: #212121;
+  box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  outline: none;
+  :hover {
+    background-color: #616161;
+  }
+`
+
+const ButtonLabel = styled.p`
+  color: #ffffff;
+`
+
 type Props = {
   repositories: RepositoryData[]
   storeRepositories: (data: RepositoryData[]) => void
@@ -49,10 +80,40 @@ const initPagenation = {
   allPageNum: 0
 }
 
+const initialModalSetting: {
+  isShow: boolean
+  modalStyle: ModalStyle
+  overlayStyle: ModalOverlayStyle
+} = {
+  isShow: false,
+  modalStyle: {
+    height: "100vh",
+    width: "240px",
+    backgroundColorHex: "474749"
+  },
+  overlayStyle: {
+    colorHex: "EEEEEE"
+  }
+}
+
+const initialSearchFilterModel: SearchFilterModel = {
+  keyword: [],
+  star: {
+    low: "",
+    high: ""
+  },
+  language: "",
+  license: ""
+}
+
 const Dashboard: React.FC<Props> = props => {
   const initState: RepositoryData[] = []
   const [repos, setRepos] = React.useState(initState)
   const [pagenation, setPagenation] = React.useState(initPagenation)
+  const [modalState, setModalState] = React.useState(initialModalSetting)
+  const [searchFilterModel, setSearchFilterModel] = React.useState(
+    initialSearchFilterModel
+  )
 
   const computeAllPageNum = (repoLength: number, perPage: number): number => {
     const split = repoLength / perPage
@@ -61,6 +122,10 @@ const Dashboard: React.FC<Props> = props => {
       return split + 1
     }
     return split
+  }
+
+  const updateSearchFilter = (current: SearchFilterModel) => {
+    setSearchFilterModel(Object.assign({}, current))
   }
 
   const setNowPage = (now: number): void => {
@@ -107,8 +172,23 @@ const Dashboard: React.FC<Props> = props => {
       return repos.slice(0, p.perPage - 1)
     }
   }
+
+  const openModal = () => {
+    setModalState(Object.assign({}, modalState, { isShow: true }))
+  }
+
+  const closeModal = () => {
+    setModalState(Object.assign({}, modalState, { isShow: false }))
+  }
+
+  const searchFilterButtonClickedHandler = () => {
+    openModal()
+  }
   return (
     <DashboardOutline>
+      <SearchFloatingButton onClick={e => searchFilterButtonClickedHandler()}>
+        <ButtonLabel>Search Filter</ButtonLabel>
+      </SearchFloatingButton>
       <Left></Left>
       <Center>
         <RepositoryList repositoryDatas={paging(repos, pagenation)} />
@@ -121,6 +201,12 @@ const Dashboard: React.FC<Props> = props => {
         </PageNaviWrapper>
       </Center>
       <Right></Right>
+      <Modal {...modalState} onClose={closeModal}>
+        <SearchFilter
+          model={searchFilterModel}
+          updateSearchFilter={updateSearchFilter}
+        />
+      </Modal>
     </DashboardOutline>
   )
 }
