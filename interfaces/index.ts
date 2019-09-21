@@ -19,3 +19,23 @@ export type RepositoryData = {
   language: string,
   updatedAt: string
 }
+
+export type ModalOverlayStyle = {
+  colorHex: string
+}
+
+export type ModalStyle = {
+  height: string,
+  width: string,
+  backgroundColorHex: string
+}
+
+export type SearchFilterModel = {
+  keyword: string[],
+  star: {
+    low: string,
+    high: string
+  },
+  language: string,
+  license: string
+}
