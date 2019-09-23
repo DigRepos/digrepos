@@ -1,10 +1,7 @@
 import * as React from "react"
 import styled from "../../interfaces/styled-theme"
-import { SearchFilterModel } from "../../interfaces"
-import { loadGetInitialProps } from "next-server/dist/lib/utils"
-
-// TODO
-// storeの導入
+import { RepositoryData, SearchFilterModel } from "../../interfaces"
+import { searchRepositories } from '../../api'
 
 const HeaderTitle = styled.div`
   font-size: 1.3em;
@@ -66,26 +63,39 @@ const Button = styled.button`
 type Props = {
   model: SearchFilterModel
   updateSearchFilter: (current: SearchFilterModel) => void
+  updateRepositoryDatas: (fetched: RepositoryData[]) => void
 }
 
 const SearchFilter: React.FC<Props> = props => {
   const [state, setState] = React.useState(props.model)
 
+  React.useEffect(() => {
+    return () => {
+      props.updateSearchFilter(state)
+    }
+  })
+
   const updateByKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data = { keyword: [e.target.value] }
+    const data: Pick<SearchFilterModel, 'keywords'> = { keywords: [e.target.value] }
     setState(Object.assign({}, state, data))
   }
   const updateByLowerStar = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data = { star: { low: e.target.value, high: props.model.star.high } }
+    const data: Pick<SearchFilterModel, 'star'> = { star: { low: e.target.value, high: props.model.star.high } }
     setState(Object.assign({}, state, data))
   }
   const updateByLanguage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data = { language: [e.target.value] }
+    const data: Pick<SearchFilterModel, 'language'> = { language: e.target.value }
     setState(Object.assign({}, state, data))
   }
   const updateByLicense = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data = { license: [e.target.value] }
+    const data: Pick<SearchFilterModel, 'license'> = { license: e.target.value }
     setState(Object.assign({}, state, data))
+  }
+
+  const searchButtonClickedHandler = async () => {
+    const datas: RepositoryData[] = await searchRepositories("/filter", state)
+    console.log('searchbutton clicked', datas)
+    props.updateRepositoryDatas(datas)
   }
   
   return (
@@ -97,7 +107,7 @@ const SearchFilter: React.FC<Props> = props => {
         <SearchKey>Keyword</SearchKey>
         <SearchInput
           onChange={e => updateByKeyword(e)}
-          defaultValue={props.model.keyword}
+          defaultValue={props.model.keywords.join(" ")}
         />
       </SearchComponent>
       <SearchComponent>
@@ -125,7 +135,7 @@ const SearchFilter: React.FC<Props> = props => {
         />
       </SearchComponent>
       <SearchButtonArea>
-        <Button>Search</Button>
+        <Button onClick={e => searchButtonClickedHandler()}>Search</Button>
       </SearchButtonArea>
     </>
   )
