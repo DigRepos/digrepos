@@ -1,5 +1,6 @@
 import axios from "axios"
-import { RepositoryData } from "../interfaces"
+import qs from 'qs'
+import { RepositoryData, SearchFilterModel } from "../interfaces"
 
 const instance = axios.create({
   baseURL: "http://localhost:1234",
@@ -22,5 +23,16 @@ export function fetchRepositoryList(
       .catch(error => {
         reject(error)
       })
+  })
+}
+
+export function searchRepositories(endpoint: string, filter: SearchFilterModel): Promise<RepositoryData[]> {
+  const url = endpoint + '?' + qs.stringify(filter)
+  console.log('[API searchRepositories] url', url)
+  return new Promise<RepositoryData[]>((resolve, reject) => {
+    instance
+      .get(url)
+      .then(response => resolve(response.data))
+      .catch(error => reject(error))
   })
 }
