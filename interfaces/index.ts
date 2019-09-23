@@ -31,7 +31,7 @@ export type ModalStyle = {
 }
 
 export type SearchFilterModel = {
-  keyword: string[],
+  keywords: string[],
   star: {
     low: string,
     high: string
