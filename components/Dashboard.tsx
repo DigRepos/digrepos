@@ -10,9 +10,7 @@ import {
 import styled from "../interfaces/styled-theme"
 import { fetchRepositoryList } from "../api"
 import Modal from "./Modal"
-import SearchFilter from "./SearchFilter"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSearchPlus } from "@fortawesome/free-solid-svg-icons"
+import SearchFilter from "../containers/SearchFilter"
 
 const DashboardOutline = styled.div`
   width: 90%;
@@ -96,24 +94,11 @@ const initialModalSetting: {
   }
 }
 
-const initialSearchFilterModel: SearchFilterModel = {
-  keyword: [],
-  star: {
-    low: "",
-    high: ""
-  },
-  language: "",
-  license: ""
-}
-
 const Dashboard: React.FC<Props> = props => {
   const initState: RepositoryData[] = []
   const [repos, setRepos] = React.useState(initState)
   const [pagenation, setPagenation] = React.useState(initPagenation)
   const [modalState, setModalState] = React.useState(initialModalSetting)
-  const [searchFilterModel, setSearchFilterModel] = React.useState(
-    initialSearchFilterModel
-  )
 
   const computeAllPageNum = (repoLength: number, perPage: number): number => {
     const split = repoLength / perPage
@@ -122,10 +107,6 @@ const Dashboard: React.FC<Props> = props => {
       return split + 1
     }
     return split
-  }
-
-  const updateSearchFilter = (current: SearchFilterModel) => {
-    setSearchFilterModel(Object.assign({}, current))
   }
 
   const setNowPage = (now: number): void => {
@@ -202,10 +183,7 @@ const Dashboard: React.FC<Props> = props => {
       </Center>
       <Right></Right>
       <Modal {...modalState} onClose={closeModal}>
-        <SearchFilter
-          model={searchFilterModel}
-          updateSearchFilter={updateSearchFilter}
-        />
+        <SearchFilter />
       </Modal>
     </DashboardOutline>
   )
