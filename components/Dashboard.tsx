@@ -95,8 +95,7 @@ const initialModalSetting: {
 }
 
 const Dashboard: React.FC<Props> = props => {
-  const initState: RepositoryData[] = []
-  const [repos, setRepos] = React.useState(initState)
+  const [repos, setRepos] = React.useState(props.repositories)
   const [pagenation, setPagenation] = React.useState(initPagenation)
   const [modalState, setModalState] = React.useState(initialModalSetting)
 
@@ -183,7 +182,7 @@ const Dashboard: React.FC<Props> = props => {
       </Center>
       <Right></Right>
       <Modal {...modalState} onClose={closeModal}>
-        <SearchFilter />
+        <SearchFilter updateDashboardState={(repos: RepositoryData[]) => setRepos(repos)}/>
       </Modal>
     </DashboardOutline>
   )
