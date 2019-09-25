@@ -4,7 +4,7 @@ import { RepositoryData, SearchFilterModel } from "../interfaces"
 
 const instance = axios.create({
   baseURL: "http://localhost:1234",
-  timeout: 5000,
+  timeout: 50000,
   headers: {
     "Content-Type": "application/json"
   },
@@ -28,7 +28,6 @@ export function fetchRepositoryList(
 
 export function searchRepositories(endpoint: string, filter: SearchFilterModel): Promise<RepositoryData[]> {
   const url = endpoint + '?' + qs.stringify(filter)
-  console.log('[API searchRepositories] url', url)
   return new Promise<RepositoryData[]>((resolve, reject) => {
     instance
       .get(url)
