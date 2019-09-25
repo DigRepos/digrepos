@@ -1,7 +1,7 @@
 import * as React from "react"
 import styled from "../../interfaces/styled-theme"
 import { RepositoryData, SearchFilterModel } from "../../interfaces"
-import { searchRepositories } from '../../api'
+import { searchRepositories } from "../../api"
 
 const HeaderTitle = styled.div`
   font-size: 1.3em;
@@ -64,6 +64,7 @@ type Props = {
   model: SearchFilterModel
   updateSearchFilter: (current: SearchFilterModel) => void
   updateRepositoryDatas: (fetched: RepositoryData[]) => void
+  updateDashboardState: (repos: RepositoryData[]) => void
 }
 
 const SearchFilter: React.FC<Props> = props => {
@@ -76,28 +77,42 @@ const SearchFilter: React.FC<Props> = props => {
   })
 
   const updateByKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data: Pick<SearchFilterModel, 'keywords'> = { keywords: [e.target.value] }
+    const data: Pick<SearchFilterModel, "keywords"> = {
+      keywords: [e.target.value]
+    }
     setState(Object.assign({}, state, data))
   }
   const updateByLowerStar = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data: Pick<SearchFilterModel, 'star'> = { star: { low: e.target.value, high: props.model.star.high } }
+    const data: Pick<SearchFilterModel, "star"> = {
+      star: { low: e.target.value, high: props.model.star.high }
+    }
+    setState(Object.assign({}, state, data))
+  }
+  const updateByHigherStar = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const data: Pick<SearchFilterModel, "star"> = {
+      star: { low: props.model.star.high, high: e.target.value }
+    }
     setState(Object.assign({}, state, data))
   }
   const updateByLanguage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data: Pick<SearchFilterModel, 'language'> = { language: e.target.value }
+    const data: Pick<SearchFilterModel, "language"> = {
+      language: e.target.value
+    }
     setState(Object.assign({}, state, data))
   }
-  const updateByLicense = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const data: Pick<SearchFilterModel, 'license'> = { license: e.target.value }
+  const updateByLicense = (e: React.FormEvent<HTMLInputElement>) => {
+    const data: Pick<SearchFilterModel, "license"> = { license: e.currentTarget.value }
     setState(Object.assign({}, state, data))
   }
 
   const searchButtonClickedHandler = async () => {
+    props.updateSearchFilter(state)
     const datas: RepositoryData[] = await searchRepositories("/filter", state)
-    console.log('searchbutton clicked', datas)
+    console.log("searchbutton clicked", datas)
     props.updateRepositoryDatas(datas)
+    props.updateDashboardState(datas)
   }
-  
+
   return (
     <>
       <SearchComponent>
@@ -117,7 +132,10 @@ const SearchFilter: React.FC<Props> = props => {
             onChange={e => updateByLowerStar(e)}
             defaultValue={props.model.star.low}
           />
-          <StarInput />
+          <StarInput
+            onChange={e => updateByHigherStar(e)}
+            defaultValue={props.model.star.high}
+          />
         </StarInputArea>
       </SearchComponent>
       <SearchComponent>
