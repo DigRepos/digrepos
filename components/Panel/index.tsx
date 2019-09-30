@@ -32,14 +32,15 @@ const PanelFrame = styled.div`
 `
 const ImageArea = styled.div`
   margin: 16px 12px;
+  width: 100px;
+  height: 72px;
 `
 const OwnerImage = styled.img`
   border-radius: 4px;
   width: 72px;
   height: 72px;
   background-image: url(${(props: UserImageProps) => props.url});
-  object-fit: cover;
-  object-position: 100% 100%;
+  background-size:  cover;
 `
 
 const InfoArea = styled.div`
