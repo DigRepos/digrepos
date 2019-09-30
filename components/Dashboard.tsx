@@ -70,12 +70,7 @@ type Props = {
 type Pagenation = {
   pageNo: number
   perPage: number
-}
-
-const initPagenation = {
-  pageNo: 1,
-  perPage: 10,
-  allPageNum: 0
+  allPageNum: number
 }
 
 const initialModalSetting: {
@@ -96,9 +91,8 @@ const initialModalSetting: {
 
 const Dashboard: React.FC<Props> = props => {
   const [repos, setRepos] = React.useState(props.repositories)
-  const [pagenation, setPagenation] = React.useState(initPagenation)
-  const [modalState, setModalState] = React.useState(initialModalSetting)
-
+  const PER_PAGE = 10
+  // 全ページ数計算
   const computeAllPageNum = (repoLength: number, perPage: number): number => {
     const split = repoLength / perPage
     const syou = repoLength % perPage
@@ -107,6 +101,13 @@ const Dashboard: React.FC<Props> = props => {
     }
     return split
   }
+  const initPagenation = {
+    pageNo: 1,
+    perPage: PER_PAGE,
+    allPageNum: computeAllPageNum(repos.length, PER_PAGE)
+  }
+  const [pagenation, setPagenation] = React.useState(initPagenation)
+  const [modalState, setModalState] = React.useState(initialModalSetting)
 
   const setNowPage = (now: number): void => {
     setPagenation(
@@ -131,26 +132,12 @@ const Dashboard: React.FC<Props> = props => {
   }, [])
 
   const paging = (repos: RepositoryData[], p: Pagenation): RepositoryData[] => {
-    const highLimit = (p.pageNo + 1) * p.perPage
-    const lowLimit = p.pageNo * p.perPage
-    if (repos.length > lowLimit && repos.length < highLimit) {
-      // 最後の余り要素のみ表示
-      return repos.filter((data: RepositoryData, i: number) => i > lowLimit - 1)
-    } else if (repos.length > highLimit) {
-      return repos.filter(
-        (data: RepositoryData, i: number) =>
-          i >= lowLimit - 1 && i <= highLimit - 1
-      )
-    } else if (repos.length < highLimit) {
-      const lastPage = repos.length / p.perPage
-      const lastPageFirstIdx = lastPage * p.perPage - 1
-      return repos.filter(
-        (data: RepositoryData, i: number) => i >= lastPageFirstIdx
-      )
-    } else {
-      // 先頭要素のみ取り出す
-      return repos.slice(0, p.perPage - 1)
-    }
+    const startIdx = (p.pageNo - 1) * p.perPage
+    const endMaxIdx = p.pageNo * p.perPage
+    return repos.filter(
+      (repo: RepositoryData, idx: number) =>
+        idx >= startIdx + 1 && idx <= endMaxIdx
+    )
   }
 
   const openModal = () => {
@@ -175,14 +162,16 @@ const Dashboard: React.FC<Props> = props => {
         <PageNaviWrapper>
           <PageNavi
             pageNum={pagenation.allPageNum}
-            nowPage={1}
+            nowPage={pagenation.pageNo}
             setNowPage={setNowPage}
           />
         </PageNaviWrapper>
       </Center>
       <Right></Right>
       <Modal {...modalState} onClose={closeModal}>
-        <SearchFilter updateDashboardState={(repos: RepositoryData[]) => setRepos(repos)}/>
+        <SearchFilter
+          updateDashboardState={(repos: RepositoryData[]) => setRepos(repos)}
+        />
       </Modal>
     </DashboardOutline>
   )
