@@ -51,30 +51,49 @@ const PageNavi: React.FC<Props> = props => {
   const MAX_LIMIT_PAGE_NUM = 4
 
   // ページの表示番号を現在のページ位置から再設定する
-  const renewPageNaviArray = (nextPage: number): number[] => {
+  const renewPageNaviArray = (
+    nextPage: number,
+    allPageNum: number
+  ): number[] => {
     let arr: number[] = []
-    if (pageNoArray[0] > nextPage) {
-      for (let i = MAX_LIMIT_PAGE_NUM; i > 0; i--) {
-        arr.push(nextPage - (i - 1))
-      }
+    if (
+      nextPage >= pageNoArray[0] &&
+      nextPage <= pageNoArray[pageNoArray.length - 1]
+    ) {
+      return [...pageNoArray]
     } else {
-      for (let i = 0; i < MAX_LIMIT_PAGE_NUM; i++) {
-        arr.push(nextPage - i)
+      if (nextPage < pageNoArray[0]) {
+        for (let i = MAX_LIMIT_PAGE_NUM; i > 0; i--) {
+          arr.push(nextPage - (i - 1))
+        }
+      } else {
+        for (let i = 0; i < MAX_LIMIT_PAGE_NUM; i++) {
+          if (nextPage + i > allPageNum) {
+            break
+          }
+          arr.push(nextPage + i)
+        }
       }
     }
+
     return arr
   }
 
   // ページ番号配列に隣接ページ移動'>', 最終ページ移動'>>'を加える
-  const makePageNaviStringArray = (numArray: number[]): string[] => {
-    if (numArray[0] === 1 && numArray.length < MAX_LIMIT_PAGE_NUM) {
+  const makePageNaviStringArray = (
+    numArray: number[],
+    allPageNum: number
+  ): string[] => {
+    if (allPageNum < MAX_LIMIT_PAGE_NUM) {
       return numArray2StringArray(numArray)
-    } else if (numArray[0] === 1 && numArray.length > MAX_LIMIT_PAGE_NUM) {
-      return [...numArray2StringArray(numArray), ">", ">>"]
-    } else if (numArray[numArray.length - 1] === props.pageNum) {
-      return ["<<", "<", ...numArray2StringArray(numArray)]
     } else {
-      return numArray2StringArray(numArray)
+      if (numArray[0] === 1) {
+        return [...numArray2StringArray(numArray), ">", ">>"]
+      } else if (numArray[numArray.length - 1] === props.pageNum) {
+        return ["<<", "<", ...numArray2StringArray(numArray)]
+      } else {
+        return ["<<", "<", ...numArray2StringArray(numArray), ">", ">>"]
+      }
     }
   }
 
@@ -97,16 +116,16 @@ const PageNavi: React.FC<Props> = props => {
       default:
         pageNo = Number(pageNoText)
     }
-    props.setNowPage(Number(pageNo))
+    props.setNowPage(pageNo)
     // 新たに作成したページ番号配列
-    const numArray: number[] = renewPageNaviArray(Number(pageNo))
+    const numArray: number[] = renewPageNaviArray(Number(pageNo), props.pageNum)
     setPageNoArray(numArray)
     scrollTo(0, 0)
   }
 
   return (
     <PageNaviArea>
-      {makePageNaviStringArray(pageNoArray).map((v, i) => {
+      {makePageNaviStringArray(pageNoArray, props.pageNum).map((v, i) => {
         const p: PageNoProps = {
           bgColorHex: i + 1 === props.nowPage ? "e1f5fe" : "FFFFFF"
         }

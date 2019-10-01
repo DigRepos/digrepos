@@ -94,7 +94,7 @@ const Dashboard: React.FC<Props> = props => {
   const PER_PAGE = 10
   // 全ページ数計算
   const computeAllPageNum = (repoLength: number, perPage: number): number => {
-    const split = repoLength / perPage
+    const split = Math.floor(repoLength / perPage)
     const syou = repoLength % perPage
     if (syou > 0) {
       return split + 1
