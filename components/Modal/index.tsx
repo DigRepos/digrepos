@@ -2,7 +2,7 @@ import * as React from "react"
 import Frame from "./Frame"
 import Backdrop from "./Backdrop"
 import { ModalStyle, ModalOverlayStyle } from "../../interfaces"
-import styled, { keyframes } from '../../interfaces/styled-theme'
+import styled, { keyframes } from "../../interfaces/styled-theme"
 
 type Props = {
   isShow: boolean
@@ -51,26 +51,28 @@ const OverlayFadeOut = keyframes`
   }
 `
 
-
 const Modal: React.FC<Props> = props => {
+  const ModalFrame = props.isShow
+    ? styled(Frame)`
+        visibility: visible;
+        left: 0%;
+        animation: ${modalFadeIn} 0.3s linear;
+      `
+    : styled(Frame)`
+        visibility: hidden;
+        left: -30%;
+        animation: ${modalFadeOut} 0.3s linear;
+      `
 
-  const ModalFrame = props.isShow ? styled(Frame)`
-    visibility: visible;
-    left: 0%;
-    animation: ${modalFadeIn} 0.3s linear;
-  ` : styled(Frame)`
-    visibility: hidden;
-    left: -30%;
-    animation: ${modalFadeOut} 0.3s linear;
-  `
-
-  const ModalOverlay = props.isShow ? styled(Backdrop)`
-    visibility: visible;
-    animation: ${OverlayFadeIn} 0.3s linear;
-  ` : styled(Backdrop)`
-    visibility: hidden;
-    animation: ${OverlayFadeOut} 0.3s linear;
-  `
+  const ModalOverlay = props.isShow
+    ? styled(Backdrop)`
+        visibility: visible;
+        animation: ${OverlayFadeIn} 0.3s linear;
+      `
+    : styled(Backdrop)`
+        visibility: hidden;
+        animation: ${OverlayFadeOut} 0.3s linear;
+      `
 
   return props.isShow ? (
     <>
