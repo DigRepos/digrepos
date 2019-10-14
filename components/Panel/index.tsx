@@ -27,12 +27,12 @@ const PanelFrame = styled.div`
   width: auto;
   height: auto;
   padding: 8px;
-  box-shadow: 10px 10px 10px 10px rgba(238, 238, 238, 1);
+  box-shadow: 5px 5px 5px 5px rgba(238, 238, 238, 1);
   display: flex;
 `
 const ImageArea = styled.div`
   margin: 16px 12px;
-  width: 100px;
+  width: 16%;
   height: 72px;
 `
 const OwnerImage = styled.img`
@@ -46,6 +46,7 @@ const OwnerImage = styled.img`
 const InfoArea = styled.div`
   margin: 8px;
   padding: 4px;
+  width: 85%;
 `
 const RepositoryName = styled.div`
   margin: 4px 0px;
@@ -62,7 +63,7 @@ const AnchorLink = styled.a`
 `
 
 const Description = styled.div`
-  　　word-wrap: break-word;
+  word-wrap: break-word;
 `
 const Homepage = styled.div`
   margin: 2px;
@@ -93,11 +94,22 @@ const TopicTag = styled.div`
   background-color: #eeeeee;
 `
 
+const UpdateDate = styled.div`
+  margin: 8px;
+  margin-left: 60%;
+  font-size: 80%;
+  color: #757575;
+`
+
 const Panel: React.FC<Props> = props => {
   const makeTopics = (topics: string[]) => {
     return topics.map((v: string, i: number) => (
       <TopicTag key={i}>{v}</TopicTag>
     ))
+  }
+
+  const makeUpdateDate = (dateTime: string) => {
+    return dateTime.split(" ")[0]
   }
 
   return (
@@ -140,6 +152,7 @@ const Panel: React.FC<Props> = props => {
           </IconAndNumber>
         </Indexes>
         <TopicsArea>{makeTopics(props.topics)}</TopicsArea>
+        <UpdateDate>updated at {makeUpdateDate(props.updatedAt)}</UpdateDate>
       </InfoArea>
     </PanelFrame>
   )
