@@ -3,14 +3,6 @@ import styled from "../../interfaces/styled-theme"
 import { RepositoryData, SearchFilterModel } from "../../interfaces"
 import { searchRepositories } from "../../api"
 
-const HeaderTitle = styled.div`
-  font-size: 1.3em;
-  font-weight: bold;
-  padding: 8px;
-  margin: 8px;
-  color: #9e9e9e;
-`
-
 const SearchKey = styled.div`
   font-weight: bold;
   padding: 4px;
@@ -77,8 +69,10 @@ const SearchFilter: React.FC<Props> = props => {
   })
 
   const updateByKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputStr: string = e.target.value
+    let strArr: string[] = inputStr.split(",").map(v => v.trim())
     const data: Pick<SearchFilterModel, "keywords"> = {
-      keywords: [e.target.value]
+      keywords: strArr
     }
     setState(Object.assign({}, state, data))
   }
@@ -101,7 +95,9 @@ const SearchFilter: React.FC<Props> = props => {
     setState(Object.assign({}, state, data))
   }
   const updateByLicense = (e: React.FormEvent<HTMLInputElement>) => {
-    const data: Pick<SearchFilterModel, "license"> = { license: e.currentTarget.value }
+    const data: Pick<SearchFilterModel, "license"> = {
+      license: e.currentTarget.value
+    }
     setState(Object.assign({}, state, data))
   }
 
@@ -116,13 +112,11 @@ const SearchFilter: React.FC<Props> = props => {
   return (
     <>
       <SearchComponent>
-        <HeaderTitle>Filter</HeaderTitle>
-      </SearchComponent>
-      <SearchComponent>
         <SearchKey>Keyword</SearchKey>
         <SearchInput
+          className={"search-keywords"}
           onChange={e => updateByKeyword(e)}
-          defaultValue={props.model.keywords.join(" ")}
+          defaultValue={props.model.keywords.join(",")}
         />
       </SearchComponent>
       <SearchComponent>

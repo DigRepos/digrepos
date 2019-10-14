@@ -11,6 +11,7 @@ import styled from "../interfaces/styled-theme"
 import { fetchRepositoryList } from "../api"
 import Modal from "./Modal"
 import SearchFilter from "../containers/SearchFilter"
+import TabNavigation from "./TabNavigation"
 
 const DashboardOutline = styled.div`
   width: 90%;
@@ -151,6 +152,7 @@ const Dashboard: React.FC<Props> = props => {
   const searchFilterButtonClickedHandler = () => {
     openModal()
   }
+
   return (
     <DashboardOutline>
       <SearchFloatingButton onClick={e => searchFilterButtonClickedHandler()}>
@@ -169,8 +171,23 @@ const Dashboard: React.FC<Props> = props => {
       </Center>
       <Right></Right>
       <Modal {...modalState} onClose={closeModal}>
-        <SearchFilter
-          updateDashboardState={(repos: RepositoryData[]) => setRepos(repos)}
+        <TabNavigation
+          elms={[
+            {
+              key: "filter",
+              element: (
+                <SearchFilter
+                  updateDashboardState={(repos: RepositoryData[]) =>
+                    setRepos(repos)
+                  }
+                />
+              )
+            },
+            {
+              key: "sort",
+              element: <div></div>
+            }
+          ]}
         />
       </Modal>
     </DashboardOutline>
