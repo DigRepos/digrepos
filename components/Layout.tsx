@@ -15,6 +15,8 @@ const HeaderWrapper = styled.header`
   width: 100vw;
   height: 40px;
   padding: 24px;
+  border-bottom: solid;
+  border-width: 0.8px;
   border-color: #FFFFFF #FFFFFF #EEEEEE #FFFFFF;
   background-color: #FFFFFF;
   z-index: 100;
@@ -65,7 +67,6 @@ const Layout: React.FunctionComponent<Props> = ({
       <BodyContent>{children}</BodyContent>
     </Body>
     <Footer>
-      <span>I'm here to stay (Footer)</span>
     </Footer>
   </div>
 )
