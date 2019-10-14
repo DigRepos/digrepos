@@ -39,3 +39,5 @@ export type SearchFilterModel = {
   language: string,
   license: string
 }
+
+export type TabKey = 'filter' | 'sort'
