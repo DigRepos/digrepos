@@ -41,3 +41,8 @@ export type SearchFilterModel = {
 }
 
 export type TabKey = 'filter' | 'sort'
+
+export type DraggableItem = {
+  idx: string,
+  expr: string
+}
