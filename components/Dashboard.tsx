@@ -12,6 +12,7 @@ import { fetchRepositoryList } from "../api"
 import Modal from "./Modal"
 import SearchFilter from "../containers/SearchFilter"
 import TabNavigation from "./TabNavigation"
+import SortablePanel from "./SortablePanel"
 
 const DashboardOutline = styled.div`
   width: 90%;
@@ -185,7 +186,7 @@ const Dashboard: React.FC<Props> = props => {
             },
             {
               key: "sort",
-              element: <div></div>
+              element: <SortablePanel />
             }
           ]}
         />
