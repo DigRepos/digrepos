@@ -16,19 +16,31 @@ const PanelArea = styled.div`
 `
 
 const SortablePanel: React.FC<{}> = () => {
-  const exprArray: DraggableItem[] = [
-    { idx: "star", expr: "Star" },
-    { idx: "fork", expr: "Fork" },
-    { idx: "watch", expr: "Watch" },
-    { idx: "date", expr: "Date" }
+  const initSortPanels: DraggableItem[] = [
+    { idx: 0, key: "star", expr: "Star" },
+    { idx: 1, key: "fork", expr: "Fork" },
+    { idx: 2, key: "watch", expr: "Watch" },
+    { idx: 3, key: "date", expr: "Date" }
   ]
+
+  const [panels, setPanels] = React.useState(initSortPanels)
+
+  const orderUpdate = React.useCallback(
+    (dragIdx: number, hoverIdx: number) => {
+      const dragPanel = panels[dragIdx]
+      let tmp = panels.splice(dragIdx, 1)
+      console.log('hogehoge!', tmp.splice(hoverIdx, 0, dragPanel))
+      setPanels(tmp.splice(hoverIdx, 0, dragPanel))
+    },
+    [panels]
+  )
 
   return (
     <DndProvider backend={HTML5Backend}>
       <SortSection>
         <PanelArea>
-          {exprArray.map(v => (
-            <Panel key={v.idx} item={v} />
+          {panels.map(v => (
+            <Panel key={v.key} item={v} update={orderUpdate} />
           ))}
         </PanelArea>
       </SortSection>
