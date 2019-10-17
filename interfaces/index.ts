@@ -42,7 +42,9 @@ export type SearchFilterModel = {
 
 export type TabKey = 'filter' | 'sort'
 
+// 配列のインデックスと要素を紐づけるため、idxは数値型
 export type DraggableItem = {
-  idx: string,
+  idx: number,
+  key: string,
   expr: string
 }
