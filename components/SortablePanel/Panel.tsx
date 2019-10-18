@@ -3,13 +3,11 @@ import styled from "../../interfaces/styled-theme"
 import {
   useDrag,
   useDrop,
-  DropTargetMonitor,
-  DragObjectWithType
+  DropTargetMonitor
 } from "react-dnd-cjs"
 import { XYCoord } from "dnd-core"
 import ItemType from "./ItemType"
 import { DraggableItem } from "../../interfaces"
-import { updateExpression } from "@babel/types"
 
 const StyledPanel = styled.div`
   padding: 8px;
@@ -62,16 +60,15 @@ const Panel: React.FC<Props> = props => {
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return
       }
+      
       props.update(dragIndex, hoverIndex)
       item.idx = hoverIndex
     }
   })
-  const [{ isDragging }, drag] = useDrag({
+  const [, drag] = useDrag({
     item: {
       type: ItemType.PANEL,
       idx: props.item.idx,
-      key: props.item.key,
-      expr: props.item.expr
     },
     collect: monitor => ({
       isDragging: monitor.isDragging()

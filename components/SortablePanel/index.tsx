@@ -17,20 +17,36 @@ const PanelArea = styled.div`
 
 const SortablePanel: React.FC<{}> = () => {
   const initSortPanels: DraggableItem[] = [
-    { idx: 0, key: "star", expr: "Star" },
-    { idx: 1, key: "fork", expr: "Fork" },
-    { idx: 2, key: "watch", expr: "Watch" },
-    { idx: 3, key: "date", expr: "Date" }
+    { idx: 1, key: "star", expr: "Star" },
+    { idx: 2, key: "fork", expr: "Fork" },
+    { idx: 3, key: "watch", expr: "Watch" },
+    { idx: 4, key: "date", expr: "Date" }
   ]
 
   const [panels, setPanels] = React.useState(initSortPanels)
 
+  const correspondingArrayIndex = (
+    panels: DraggableItem[],
+    idx: number
+  ): number => {
+    for (let i = 0, len = panels.length; i < len; i++) {
+      if (panels[i].idx === idx) {
+        return i
+      }
+    }
+    return 0
+  }
+
   const orderUpdate = React.useCallback(
     (dragIdx: number, hoverIdx: number) => {
-      const dragPanel = panels[dragIdx]
-      let tmp = panels.splice(dragIdx, 1)
-      console.log('hogehoge!', tmp.splice(hoverIdx, 0, dragPanel))
-      setPanels(tmp.splice(hoverIdx, 0, dragPanel))
+      const fromIdx = correspondingArrayIndex(panels, dragIdx)
+      const toIdx = correspondingArrayIndex(panels, hoverIdx)
+      const dragPanel: DraggableItem = panels[fromIdx]
+      let tmpPanels: DraggableItem[] = panels
+      tmpPanels.splice(fromIdx, 1)
+      tmpPanels.splice(toIdx, 0, dragPanel)
+      setPanels(([] as DraggableItem[]).concat(tmpPanels))
+      console.log(panels)
     },
     [panels]
   )
