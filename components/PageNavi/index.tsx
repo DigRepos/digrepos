@@ -41,12 +41,28 @@ const PageNo = styled.div<PageNoProps>`
 `
 
 // 数値配列 → 文字列配列の変換
-const numArray2StringArray = (numArray: number[]) => {
+const numArray2StringArray = (numArray: number[]): string[] => {
+  if (numArray.length === 0) {
+    return []
+  }
   return numArray.map(v => String(v))
 }
 
 const PageNavi: React.FC<Props> = props => {
-  const initialNumArray: number[] = [1, 2, 3, 4]
+
+  const createInitNumArray = React.useCallback(
+    (pageNum: number) => {
+      if (pageNum === 0) {
+        return []
+      } else if (pageNum < 5) {
+        return [...Array(pageNum)].map((v, i) => i + 1)
+      } else {
+        return [1, 2, 3, 4]
+      }
+    },
+    [props.pageNum]
+  )
+  const initialNumArray: number[] = createInitNumArray(props.pageNum)
   const [pageNoArray, setPageNoArray] = React.useState(initialNumArray)
   const MAX_LIMIT_PAGE_NUM = 4
 
@@ -60,11 +76,19 @@ const PageNavi: React.FC<Props> = props => {
       nextPage >= pageNoArray[0] &&
       nextPage <= pageNoArray[pageNoArray.length - 1]
     ) {
+      // 現在表示されているページ番号に収まる移動の場合は、
+      // 同様の配列を返す
       return [...pageNoArray]
     } else {
+      // 移動先のページ番号が、表示されていない（隠れている）
+      // ページ番号に移動する時
       if (nextPage < pageNoArray[0]) {
+        // ページ位置が、現在のページネーションの最小ページよりも小さい場合
+        if (nextPage === 1) {
+          return [1, 2, 3, 4]
+        }
         for (let i = MAX_LIMIT_PAGE_NUM; i > 0; i--) {
-          arr.push(nextPage - (i - 1))
+          arr.push(pageNoArray[0] - i)
         }
       } else {
         for (let i = 0; i < MAX_LIMIT_PAGE_NUM; i++) {
