@@ -28,7 +28,7 @@ const StarInput = styled(SearchInput)`
   width: 35%;
 `
 
-const SearchComponent = styled.div`
+const SearchComponent = styled.section`
   padding: 4px;
   margin: 8px;
 `
@@ -117,6 +117,7 @@ const SearchFilter: React.FC<Props> = props => {
           className={"search-keywords"}
           onChange={e => updateByKeyword(e)}
           defaultValue={props.model.keywords.join(",")}
+          maxLength={50}
         />
       </SearchComponent>
       <SearchComponent>
@@ -125,10 +126,12 @@ const SearchFilter: React.FC<Props> = props => {
           <StarInput
             onChange={e => updateByLowerStar(e)}
             defaultValue={props.model.star.low}
+            maxLength={5}
           />
           <StarInput
             onChange={e => updateByHigherStar(e)}
             defaultValue={props.model.star.high}
+            maxLength={5}
           />
         </StarInputArea>
       </SearchComponent>
@@ -137,6 +140,7 @@ const SearchFilter: React.FC<Props> = props => {
         <SearchInput
           onChange={e => updateByLanguage(e)}
           defaultValue={props.model.language}
+          maxLength={10}
         />
       </SearchComponent>
       <SearchComponent>
@@ -144,6 +148,7 @@ const SearchFilter: React.FC<Props> = props => {
         <SearchInput
           onChange={e => updateByLicense(e)}
           defaultValue={props.model.license}
+          maxLength={10}
         />
       </SearchComponent>
       <SearchButtonArea>

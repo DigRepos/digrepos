@@ -5,7 +5,6 @@ import {
   RepositoryData,
   ModalStyle,
   ModalOverlayStyle,
-  SearchFilterModel
 } from "../interfaces"
 import styled from "../interfaces/styled-theme"
 import { fetchRepositoryList } from "../api"
@@ -22,12 +21,12 @@ const DashboardOutline = styled.div`
   font-family: "Roboto", sans-serif;
   font-weight: light;
 `
-const Left = styled.div`
+const Left = styled.aside`
   width: 20%;
   padding: 8px;
 `
 
-const Center = styled.div`
+const Center = styled.section`
   width: 65%;
   padding: 8px;
 `
@@ -37,7 +36,7 @@ const PageNaviWrapper = styled.div`
   margin: 12px 8px;
 `
 
-const Right = styled.div`
+const Right = styled.aside`
   width: 15%;
   padding: 8px;
 `
@@ -96,6 +95,8 @@ const Dashboard: React.FC<Props> = props => {
   const PER_PAGE = 10
   // 全ページ数計算
   const computeAllPageNum = (repoLength: number, perPage: number): number => {
+    console.log('[computeAllPageNum] repoLength', repoLength);
+    console.log('[computeAllPageNum] perPage', perPage);
     const split = Math.floor(repoLength / perPage)
     const syou = repoLength % perPage
     if (syou > 0) {

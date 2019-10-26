@@ -23,7 +23,7 @@ type UserImageProps = {
   url: string
 }
 
-const PanelFrame = styled.div`
+const PanelFrame = styled.article`
   width: auto;
   height: auto;
   padding: 8px;
@@ -43,7 +43,7 @@ const OwnerImage = styled.img`
   background-size:  cover;
 `
 
-const InfoArea = styled.div`
+const InfoArea = styled.section`
   margin: 8px;
   padding: 4px;
   width: 85%;
@@ -68,7 +68,7 @@ const Description = styled.div`
 const Homepage = styled.div`
   margin: 2px;
 `
-const Indexes = styled.div`
+const Indexes = styled.section`
   margin: 2px;
   padding: 2px;
   display: flex;
@@ -80,7 +80,7 @@ const IconAndNumber = styled.div`
 const CounterSpan = styled.span`
   margin-left: 4px;
 `
-const TopicsArea = styled.div`
+const TopicsArea = styled.section`
   margin: 2px;
   padding: 2px;
   display: flex;

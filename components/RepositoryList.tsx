@@ -7,7 +7,7 @@ type Props = {
   repositoryDatas: RepositoryData[]
 }
 
-const PanelWrapper = styled.div`
+const PanelWrapper = styled.section`
   margin: 32px 8px;
 `
 
