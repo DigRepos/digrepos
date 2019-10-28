@@ -46,5 +46,7 @@ export type TabKey = 'filter' | 'sort'
 export type DraggableItem = {
   idx: number,
   key: string,
-  expr: string
+  expr: SortType
 }
+
+export type SortType = 'Star' | 'Fork' | 'Watch' | 'Date'
