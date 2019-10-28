@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEye, faStar, faCodeBranch } from "@fortawesome/free-solid-svg-icons"
 import { Owner } from "../../interfaces/index"
 import styled from "../../interfaces/styled-theme"
+import emoji from "node-emoji"
 
 type Props = {
   url: string
@@ -40,7 +41,7 @@ const OwnerImage = styled.img`
   width: 72px;
   height: 72px;
   background-image: url(${(props: UserImageProps) => props.url});
-  background-size:  cover;
+  background-size: cover;
 `
 
 const InfoArea = styled.section`
@@ -56,9 +57,9 @@ const RepositoryName = styled.div`
 `
 const AnchorLink = styled.a`
   text-decoration: none;
-  color: #337AB7;
+  color: #337ab7;
   :hover {
-    color: #8C9EFF;
+    color: #8c9eff;
   }
 `
 
@@ -124,7 +125,9 @@ const Panel: React.FC<Props> = props => {
           </AnchorLink>
         </RepositoryName>
         {props.description != "" ? (
-          <Description>{props.description}</Description>
+          <Description>
+            {emoji.emojify(props.description, name => ":unknown_emoji:")}
+          </Description>
         ) : (
           "No description"
         )}
