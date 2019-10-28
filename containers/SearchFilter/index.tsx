@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { FC, useCallback } from "react"
 import { Dispatch } from "redux"
 import { useSelector, useDispatch } from "react-redux"
 import { AppState } from "../store"
@@ -6,13 +6,12 @@ import { SearchFilterModel, RepositoryData } from "../../interfaces"
 import { setFilter } from "./action"
 import { updateRepositories } from "../Dashboard/action"
 import SearchFilter from "../../components/SearchFilter"
-import { loadGetInitialProps } from "next-server/dist/lib/utils";
 
 type Props = {
   updateDashboardState: (repos: RepositoryData[]) => void
 }
 
-const SearchFilterContainer: React.FC<Props> = props => {
+const SearchFilterContainer: FC<Props> = props => {
   const selector = (state: AppState): SearchFilterModel =>
     state.setFilterReducer
   const searchFilter = useSelector<AppState, SearchFilterModel>(selector)
@@ -24,7 +23,7 @@ const SearchFilterContainer: React.FC<Props> = props => {
     },
     [dispatch]
   )
-  const storeRepositoryDatas = React.useCallback(
+  const storeRepositoryDatas = useCallback(
     (repos: RepositoryData[]) => {
       dispatch(updateRepositories(repos))
     },

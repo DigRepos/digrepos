@@ -1,17 +1,13 @@
-import * as React from "react"
+import React, { FC, useState, useEffect } from "react"
 import RepositoryList from "./RepositoryList"
 import PageNavi from "./PageNavi"
-import {
-  RepositoryData,
-  ModalStyle,
-  ModalOverlayStyle,
-} from "../interfaces"
+import { RepositoryData, ModalStyle, ModalOverlayStyle } from "../interfaces"
 import styled from "../interfaces/styled-theme"
 import { fetchRepositoryList } from "../api"
 import Modal from "./Modal"
 import SearchFilter from "../containers/SearchFilter"
 import TabNavigation from "./TabNavigation"
-import SortablePanel from "./SortablePanel"
+import SortablePanel from "../containers/Sort"
 
 const DashboardOutline = styled.div`
   width: 90%;
@@ -90,13 +86,13 @@ const initialModalSetting: {
   }
 }
 
-const Dashboard: React.FC<Props> = props => {
-  const [repos, setRepos] = React.useState(props.repositories)
+const Dashboard: FC<Props> = props => {
+  const [repos, setRepos] = useState(props.repositories)
   const PER_PAGE = 10
   // 全ページ数計算
   const computeAllPageNum = (repoLength: number, perPage: number): number => {
-    console.log('[computeAllPageNum] repoLength', repoLength);
-    console.log('[computeAllPageNum] perPage', perPage);
+    console.log("[computeAllPageNum] repoLength", repoLength)
+    console.log("[computeAllPageNum] perPage", perPage)
     const split = Math.floor(repoLength / perPage)
     const syou = repoLength % perPage
     if (syou > 0) {
@@ -109,8 +105,8 @@ const Dashboard: React.FC<Props> = props => {
     perPage: PER_PAGE,
     allPageNum: computeAllPageNum(repos.length, PER_PAGE)
   }
-  const [pagenation, setPagenation] = React.useState(initPagenation)
-  const [modalState, setModalState] = React.useState(initialModalSetting)
+  const [pagenation, setPagenation] = useState(initPagenation)
+  const [modalState, setModalState] = useState(initialModalSetting)
 
   const setNowPage = (now: number): void => {
     setPagenation(
@@ -120,7 +116,7 @@ const Dashboard: React.FC<Props> = props => {
     )
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
       const repos: RepositoryData[] = await fetchRepositoryList("/list")
       console.log(repos)

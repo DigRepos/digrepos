@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { FC, useState } from "react"
 import { TabKey } from "../interfaces"
 import styled from "../interfaces/styled-theme"
 
@@ -37,12 +37,12 @@ const SelectedLi = styled(Li)`
 
 const Contents = styled.div``
 
-const TabNavigation: React.FC<Props> = props => {
+const TabNavigation: FC<Props> = props => {
   const initialSelectedKey: State = {
     selectedTabKey: "filter",
     elms: props.elms
   }
-  const [state, setState] = React.useState(initialSelectedKey)
+  const [state, setState] = useState(initialSelectedKey)
   const switchContents = () => {
     const c: ElmMap = state.elms.filter(v => v.key === state.selectedTabKey)[0]
     return c.element
@@ -61,7 +61,11 @@ const TabNavigation: React.FC<Props> = props => {
     return tabs.map(v => {
       if (state.selectedTabKey === v.key) {
         return (
-          <SelectedLi key={v.key} data-tabkey={v.key} onClick={tabClickedHandler}>
+          <SelectedLi
+            key={v.key}
+            data-tabkey={v.key}
+            onClick={tabClickedHandler}
+          >
             {v.expr}
           </SelectedLi>
         )

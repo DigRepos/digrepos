@@ -7,7 +7,7 @@ type Props = {
   setNowPage: (num: number) => void
 }
 
-const PageNaviArea = styled.div`
+const PageNaviArea = styled.section`
   display: flex;
   justify-content: center;
   width: 50%;
@@ -50,18 +50,15 @@ const numArray2StringArray = (numArray: number[]): string[] => {
 
 const PageNavi: React.FC<Props> = props => {
 
-  const createInitNumArray = React.useCallback(
-    (pageNum: number) => {
-      if (pageNum === 0) {
-        return []
-      } else if (pageNum < 5) {
-        return [...Array(pageNum)].map((v, i) => i + 1)
-      } else {
-        return [1, 2, 3, 4]
-      }
-    },
-    [props.pageNum]
-  )
+  const createInitNumArray = (pageNum: number) => {
+    if (pageNum === 0) {
+      return []
+    } else if (pageNum < 5) {
+      return [...Array(pageNum)].map((v, i) => i + 1)
+    } else {
+      return [1, 2, 3, 4]
+    }
+  }
   const initialNumArray: number[] = createInitNumArray(props.pageNum)
   const [pageNoArray, setPageNoArray] = React.useState(initialNumArray)
   const MAX_LIMIT_PAGE_NUM = 4
