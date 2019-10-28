@@ -1,9 +1,9 @@
-import * as React from "react"
+import React, { FC, useState, useCallback } from "react"
 import styled from "../../interfaces/styled-theme"
 import Panel from "./Panel"
 import { DndProvider } from "react-dnd-cjs"
 import HTML5Backend from "react-dnd-html5-backend-cjs"
-import { DraggableItem } from "../../interfaces"
+import { DraggableItem, SortType } from "../../interfaces"
 
 const SortSection = styled.section`
   display: flex;
@@ -15,15 +15,18 @@ const PanelArea = styled.div`
   width: 80%;
 `
 
-const SortablePanel: React.FC<{}> = () => {
-  const initSortPanels: DraggableItem[] = [
-    { idx: 1, key: "star", expr: "Star" },
-    { idx: 2, key: "fork", expr: "Fork" },
-    { idx: 3, key: "watch", expr: "Watch" },
-    { idx: 4, key: "date", expr: "Date" }
-  ]
+type Props = {
+  sortOrder: SortType[]
+  storeSortOrder: (data: SortType[]) => void
+}
 
-  const [panels, setPanels] = React.useState(initSortPanels)
+const SortablePanel: FC<Props> = props => {
+  const initSortPanels: DraggableItem[] = props.sortOrder.map((v, i) => ({
+    idx: i + 1,
+    key: v.toLowerCase(),
+    expr: v
+  }))
+  const [panels, setPanels] = useState(initSortPanels)
 
   const correspondingArrayIndex = (
     panels: DraggableItem[],
@@ -37,7 +40,7 @@ const SortablePanel: React.FC<{}> = () => {
     return 0
   }
 
-  const orderUpdate = React.useCallback(
+  const orderUpdate = useCallback(
     (dragIdx: number, hoverIdx: number) => {
       const fromIdx = correspondingArrayIndex(panels, dragIdx)
       const toIdx = correspondingArrayIndex(panels, hoverIdx)
@@ -45,7 +48,9 @@ const SortablePanel: React.FC<{}> = () => {
       let tmpPanels: DraggableItem[] = panels
       tmpPanels.splice(fromIdx, 1)
       tmpPanels.splice(toIdx, 0, dragPanel)
-      setPanels(([] as DraggableItem[]).concat(tmpPanels))
+      const newPanels = ([] as DraggableItem[]).concat(tmpPanels)
+      setPanels(newPanels)
+      props.storeSortOrder(newPanels.map(v => v.expr))
       console.log(panels)
     },
     [panels]
