@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { FC, useState } from "react"
 import styled from "../../interfaces/styled-theme"
 
 type Props = {
@@ -48,19 +48,19 @@ const numArray2StringArray = (numArray: number[]): string[] => {
   return numArray.map(v => String(v))
 }
 
-const PageNavi: React.FC<Props> = props => {
-
-  const createInitNumArray = (pageNum: number) => {
+const PageNavi: FC<Props> = props => {
+  const makeNumArray = (pageNum: number) => {
+    console.log("[PageNavi] makeNumArray pageNum", pageNum)
     if (pageNum === 0) {
       return []
     } else if (pageNum < 5) {
-      return [...Array(pageNum)].map((v, i) => i + 1)
+      return [...Array(pageNum)].map((_, i) => i + 1)
     } else {
       return [1, 2, 3, 4]
     }
   }
-  const initialNumArray: number[] = createInitNumArray(props.pageNum)
-  const [pageNoArray, setPageNoArray] = React.useState(initialNumArray)
+  const initialNumArray: number[] = makeNumArray(props.pageNum)
+  const [pageNoArray, setPageNoArray] = useState(initialNumArray)
   const MAX_LIMIT_PAGE_NUM = 4
 
   // ページの表示番号を現在のページ位置から再設定する
