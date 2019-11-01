@@ -1,9 +1,9 @@
 import { SortType, RepositoryData } from "../interfaces"
+import dayjs from 'dayjs'
 
 type fnSort = (datas: RepositoryData[]) => RepositoryData[]
 
-export function sort(type: SortType): fnSort {
-  let defnSort
+export function fnSortFactory(type: SortType): fnSort {
   switch (type) {
     case "Star":
       return (dataList: RepositoryData[]) => {
@@ -47,15 +47,14 @@ export function sort(type: SortType): fnSort {
           }
         })
       }
-    // TODO: 日付ソート
     case "Date":
       return (dataList: RepositoryData[]) => {
         return dataList.sort((a: RepositoryData, b: RepositoryData) => {
-          const aNum = a.watchersCount
-          const bNum = b.watchersCount
-          if (aNum < bNum) {
+          const dayA = dayjs(a.updatedAt)
+          const dayB = dayjs(b.updatedAt)
+          if (dayA.isBefore(dayB)) {
             return 1
-          } else if (aNum >= bNum) {
+          } else if (dayA.isAfter(dayB)) {
             return -1
           } else {
             return 0
