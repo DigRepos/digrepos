@@ -51,7 +51,6 @@ const SortablePanel: FC<Props> = props => {
       const newPanels = ([] as DraggableItem[]).concat(tmpPanels)
       setPanels(newPanels)
       props.storeSortOrder(newPanels.map(v => v.expr))
-      console.log(panels)
     },
     [panels]
   )

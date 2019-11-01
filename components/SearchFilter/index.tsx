@@ -1,7 +1,8 @@
-import * as React from "react"
+import React, { FC, useState, useEffect } from "react"
 import styled from "../../interfaces/styled-theme"
-import { RepositoryData, SearchFilterModel } from "../../interfaces"
+import { RepositoryData, SearchFilterModel, SortType } from "../../interfaces"
 import { searchRepositories } from "../../api"
+import { fnSortFactory } from "../../shared/helper"
 
 const SearchKey = styled.div`
   font-weight: bold;
@@ -54,15 +55,16 @@ const Button = styled.button`
 `
 type Props = {
   model: SearchFilterModel
+  sortOrder: SortType[]
   updateSearchFilter: (current: SearchFilterModel) => void
   updateRepositoryDatas: (fetched: RepositoryData[]) => void
   updateDashboardState: (repos: RepositoryData[]) => void
 }
 
-const SearchFilter: React.FC<Props> = props => {
-  const [state, setState] = React.useState(props.model)
+const SearchFilter: FC<Props> = props => {
+  const [state, setState] = useState(props.model)
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       props.updateSearchFilter(state)
     }
@@ -101,12 +103,23 @@ const SearchFilter: React.FC<Props> = props => {
     setState(Object.assign({}, state, data))
   }
 
+  const sort = (datas: RepositoryData[]): RepositoryData[] => {
+    const sortOrder = props.sortOrder.reverse()
+    const fnSortArray = sortOrder.map(v => fnSortFactory(v))
+    let sorted: RepositoryData[] = datas
+    for (const fnSort of fnSortArray) {
+      sorted = fnSort(sorted)
+    }
+    return sorted
+  }
+
   const searchButtonClickedHandler = async () => {
     props.updateSearchFilter(state)
     const datas: RepositoryData[] = await searchRepositories("/filter", state)
-    console.log("searchbutton clicked", datas)
-    props.updateRepositoryDatas(datas)
-    props.updateDashboardState(datas)
+    console.log("fetched repository datas", datas)
+    const repos = sort(datas)
+    props.updateRepositoryDatas(repos)
+    props.updateDashboardState(repos)
   }
 
   return (

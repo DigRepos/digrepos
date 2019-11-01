@@ -2,7 +2,7 @@ import React, { FC, useCallback } from "react"
 import { Dispatch } from "redux"
 import { useSelector, useDispatch } from "react-redux"
 import { AppState } from "../store"
-import { SearchFilterModel, RepositoryData } from "../../interfaces"
+import { SearchFilterModel, RepositoryData, SortType } from "../../interfaces"
 import { setFilter } from "./action"
 import { updateRepositories } from "../Dashboard/action"
 import SearchFilter from "../../components/SearchFilter"
@@ -12,12 +12,17 @@ type Props = {
 }
 
 const SearchFilterContainer: FC<Props> = props => {
-  const selector = (state: AppState): SearchFilterModel =>
+  const searchFilterSelector = (state: AppState): SearchFilterModel =>
     state.setFilterReducer
-  const searchFilter = useSelector<AppState, SearchFilterModel>(selector)
+  const searchFilter = useSelector<AppState, SearchFilterModel>(
+    searchFilterSelector
+  )
+
+  const sortOrderSelector = (state: AppState): SortType[] => state.sortReducer
+  const sortOrder = useSelector<AppState, SortType[]>(sortOrderSelector)
 
   const dispatch = useDispatch<Dispatch>()
-  const storeSearchFilter = React.useCallback(
+  const storeSearchFilter = useCallback(
     (data: SearchFilterModel) => {
       dispatch(setFilter(data))
     },
@@ -32,6 +37,7 @@ const SearchFilterContainer: FC<Props> = props => {
   return (
     <SearchFilter
       model={searchFilter}
+      sortOrder={sortOrder}
       updateSearchFilter={storeSearchFilter}
       updateRepositoryDatas={storeRepositoryDatas}
       updateDashboardState={props.updateDashboardState}
