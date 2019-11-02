@@ -1,8 +1,14 @@
 import React, { FC, useState, useEffect } from "react"
 import styled from "../../interfaces/styled-theme"
-import { RepositoryData, SearchFilterModel, SortType } from "../../interfaces"
+import {
+  RepositoryData,
+  SearchFilterModel,
+  SortType,
+  PageNaviState
+} from "../../interfaces"
 import { searchRepositories } from "../../api"
-import { fnSortFactory } from "../../shared/helper"
+import { fnSortFactory, computeAllPageNum } from "../../shared/helper"
+import { PER_PAGE_NUM } from '../../shared/constants'
 
 const SearchKey = styled.div`
   font-weight: bold;
@@ -59,6 +65,7 @@ type Props = {
   updateSearchFilter: (current: SearchFilterModel) => void
   updateRepositoryDatas: (fetched: RepositoryData[]) => void
   updateDashboardState: (repos: RepositoryData[]) => void
+  storePageNavi: (pageNavi: PageNaviState) => void
 }
 
 const SearchFilter: FC<Props> = props => {
@@ -120,6 +127,11 @@ const SearchFilter: FC<Props> = props => {
     const repos = sort(datas)
     props.updateRepositoryDatas(repos)
     props.updateDashboardState(repos)
+    // ページナビゲーションの更新
+    props.storePageNavi({
+      currentPageNo: 1,
+      allPageNum: computeAllPageNum(repos.length, PER_PAGE_NUM)
+    })
   }
 
   return (

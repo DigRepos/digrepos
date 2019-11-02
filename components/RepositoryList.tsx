@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { FC } from "react"
 import { RepositoryData } from "../interfaces"
 import styled from "../interfaces/styled-theme"
 import Panel from "./Panel"
@@ -11,7 +11,7 @@ const PanelWrapper = styled.section`
   margin: 32px 8px;
 `
 
-const RepositoryList: React.FC<Props> = props => {
+const RepositoryList: FC<Props> = props => {
   return (
     <>
       {props.repositoryDatas.length > 0 ? (

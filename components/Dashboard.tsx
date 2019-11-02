@@ -1,13 +1,20 @@
 import React, { FC, useState, useEffect } from "react"
 import RepositoryList from "./RepositoryList"
-import PageNavi from "./PageNavi"
-import { RepositoryData, ModalStyle, ModalOverlayStyle } from "../interfaces"
+import PageNavi from "../containers/PageNavi"
+import {
+  RepositoryData,
+  ModalStyle,
+  ModalOverlayStyle,
+  PageNaviState
+} from "../interfaces"
 import styled from "../interfaces/styled-theme"
 import { fetchRepositoryList } from "../api"
 import Modal from "./Modal"
 import SearchFilter from "../containers/SearchFilter"
 import TabNavigation from "./TabNavigation"
 import SortablePanel from "../containers/Sort"
+import { PER_PAGE_NUM } from "../shared/constants"
+import { computeAllPageNum } from "../shared/helper"
 
 const DashboardOutline = styled.div`
   width: 90%;
@@ -62,6 +69,8 @@ const ButtonLabel = styled.p`
 type Props = {
   repositories: RepositoryData[]
   storeRepositories: (data: RepositoryData[]) => void
+  pageNavi: PageNaviState
+  storePageNavi: (pageNavi: PageNaviState) => void
 }
 
 type Pagenation = {
@@ -88,33 +97,22 @@ const initialModalSetting: {
 
 const Dashboard: FC<Props> = props => {
   const [repos, setRepos] = useState(props.repositories)
-  const PER_PAGE = 10
-  // 全ページ数計算
-  const computeAllPageNum = (repoLength: number, perPage: number): number => {
-    console.log("[computeAllPageNum] repoLength", repoLength)
-    console.log("[computeAllPageNum] perPage", perPage)
-    const split = Math.floor(repoLength / perPage)
-    const syou = repoLength % perPage
-    if (syou > 0) {
-      return split + 1
-    }
-    return split
-  }
-  const initPagenation = {
-    pageNo: 1,
-    perPage: PER_PAGE,
-    allPageNum: computeAllPageNum(repos.length, PER_PAGE)
-  }
-  const [pagenation, setPagenation] = useState(initPagenation)
+
+  // const initPagenation = {
+  //   pageNo: 1,
+  //   perPage: PER_PAGE,
+  //   allPageNum: computeAllPageNum(repos.length, PER_PAGE)
+  // }
+  // const [pagenation, setPagenation] = useState(initPagenation)
   const [modalState, setModalState] = useState(initialModalSetting)
 
-  const setNowPage = (now: number): void => {
-    setPagenation(
-      Object.assign({}, pagenation, {
-        pageNo: now
-      })
-    )
-  }
+  // const setNowPage = (now: number): void => {
+  //   setPagenation(
+  //     Object.assign({}, pagenation, {
+  //       pageNo: now
+  //     })
+  //   )
+  // }
 
   useEffect(() => {
     ;(async () => {
@@ -122,22 +120,40 @@ const Dashboard: FC<Props> = props => {
       console.log(repos)
       props.storeRepositories(repos)
       setRepos(repos)
-      setPagenation(
-        Object.assign({}, pagenation, {
-          allPageNum: computeAllPageNum(repos.length, pagenation.perPage)
-        })
-      )
+      props.storePageNavi({
+        currentPageNo: 1,
+        allPageNum: computeAllPageNum(repos.length, PER_PAGE_NUM)
+      })
+      // setPagenation(
+      //   Object.assign({}, pagenation, {
+      //     allPageNum: computeAllPageNum(repos.length, pagenation.perPage)
+      //   })
+      // )
     })()
   }, [])
 
-  const paging = (repos: RepositoryData[], p: Pagenation): RepositoryData[] => {
-    const startIdx = (p.pageNo - 1) * p.perPage
-    const endMaxIdx = p.pageNo * p.perPage
+  // 指定のページング範囲のリポジトリ一覧を返す
+  const paging = (
+    repos: RepositoryData[],
+    p: PageNaviState
+  ): RepositoryData[] => {
+    const startIdx = (p.currentPageNo - 1) * PER_PAGE_NUM
+    const endMaxIdx = p.currentPageNo * PER_PAGE_NUM
     return repos.filter(
       (repo: RepositoryData, idx: number) =>
         idx >= startIdx + 1 && idx <= endMaxIdx
     )
   }
+
+  // const updateAndInitPageNavi = () => {
+  //   const pageNum = computeAllPageNum(repos.length, PER_PAGE)
+  //   console.log('updateAndInitPageNavi pageNum', pageNum)
+  //   setPagenation({
+  //     pageNo: 1,
+  //     perPage: PER_PAGE,
+  //     allPageNum: pageNum,
+  //   })
+  // }
 
   const openModal = () => {
     setModalState(Object.assign({}, modalState, { isShow: true }))
@@ -158,12 +174,10 @@ const Dashboard: FC<Props> = props => {
       </SearchFloatingButton>
       <Left></Left>
       <Center>
-        <RepositoryList repositoryDatas={paging(repos, pagenation)} />
+        <RepositoryList repositoryDatas={paging(repos, props.pageNavi)} />
         <PageNaviWrapper>
           <PageNavi
-            pageNum={pagenation.allPageNum}
-            nowPage={pagenation.pageNo}
-            setNowPage={setNowPage}
+            repositoryNum={computeAllPageNum(repos.length, PER_PAGE_NUM)}
           />
         </PageNaviWrapper>
       </Center>

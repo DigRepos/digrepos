@@ -1,10 +1,12 @@
 import React, { FC, useState } from "react"
 import styled from "../../interfaces/styled-theme"
+import { PageNaviState } from "../../interfaces"
+import { numArray2StringArray } from "../../shared/helper"
 
 type Props = {
-  pageNum: number
-  nowPage: number
-  setNowPage: (num: number) => void
+  pageNaviState: PageNaviState
+  storePageNavi: (data: PageNaviState) => void
+  repositoryNum: number
 }
 
 const PageNaviArea = styled.section`
@@ -40,16 +42,8 @@ const PageNo = styled.div<PageNoProps>`
   }
 `
 
-// 数値配列 → 文字列配列の変換
-const numArray2StringArray = (numArray: number[]): string[] => {
-  if (numArray.length === 0) {
-    return []
-  }
-  return numArray.map(v => String(v))
-}
-
 const PageNavi: FC<Props> = props => {
-  const makeNumArray = (pageNum: number) => {
+  const makePageNoArray = (pageNum: number) => {
     console.log("[PageNavi] makeNumArray pageNum", pageNum)
     if (pageNum === 0) {
       return []
@@ -59,12 +53,15 @@ const PageNavi: FC<Props> = props => {
       return [1, 2, 3, 4]
     }
   }
-  const initialNumArray: number[] = makeNumArray(props.pageNum)
-  const [pageNoArray, setPageNoArray] = useState(initialNumArray)
+  const [pageNavi, setPageNavi] = useState(props.pageNaviState)
+  const initialPageNoArray: number[] = makePageNoArray(pageNavi.allPageNum)
+  const [pageNoArray, setPageNoArray] = useState(initialPageNoArray)
   const MAX_LIMIT_PAGE_NUM = 4
 
   // ページの表示番号を現在のページ位置から再設定する
-  const renewPageNaviArray = (
+  // ページ番号の押下時に見せるページネーションを再設定する
+  // TODO 実装が問題ないか確認する
+  const updatePageNoArray = (
     nextPage: number,
     allPageNum: number
   ): number[] => {
@@ -74,7 +71,7 @@ const PageNavi: FC<Props> = props => {
       nextPage <= pageNoArray[pageNoArray.length - 1]
     ) {
       // 現在表示されているページ番号に収まる移動の場合は、
-      // 同様の配列を返す
+      // 同様Ïの配列を返す
       return [...pageNoArray]
     } else {
       // 移動先のページ番号が、表示されていない（隠れている）
@@ -110,7 +107,7 @@ const PageNavi: FC<Props> = props => {
     } else {
       if (numArray[0] === 1) {
         return [...numArray2StringArray(numArray), ">", ">>"]
-      } else if (numArray[numArray.length - 1] === props.pageNum) {
+      } else if (numArray[numArray.length - 1] === pageNavi.allPageNum) {
         return ["<<", "<", ...numArray2StringArray(numArray)]
       } else {
         return ["<<", "<", ...numArray2StringArray(numArray), ">", ">>"]
@@ -123,13 +120,13 @@ const PageNavi: FC<Props> = props => {
     let pageNo: number = 0
     switch (pageNoText) {
       case ">":
-        pageNo = props.nowPage + 1
+        pageNo = pageNavi.currentPageNo + 1
         break
       case ">>":
-        pageNo = props.pageNum
+        pageNo = pageNavi.currentPageNo
         break
       case "<":
-        pageNo = props.nowPage - 1
+        pageNo = pageNavi.currentPageNo - 1
         break
       case "<<":
         pageNo = 1
@@ -137,30 +134,35 @@ const PageNavi: FC<Props> = props => {
       default:
         pageNo = Number(pageNoText)
     }
-    props.setNowPage(pageNo)
+    setPageNavi(Object.assign({}, pageNavi, { currentPageNo: pageNo }))
+    // props.setNowPage(pageNo)
     // 新たに作成したページ番号配列
-    const numArray: number[] = renewPageNaviArray(Number(pageNo), props.pageNum)
+    const numArray: number[] = updatePageNoArray(Number(pageNo), pageNavi.allPageNum)
     setPageNoArray(numArray)
     scrollTo(0, 0)
   }
 
   return (
     <PageNaviArea>
-      {makePageNaviStringArray(pageNoArray, props.pageNum).map((v, i) => {
-        const p: PageNoProps = {
-          bgColorHex: i + 1 === props.nowPage ? "e1f5fe" : "FFFFFF"
-        }
-        return (
-          <PageNo
-            {...p}
-            className={"page-no"}
-            key={i}
-            onClick={e => handlePageNoClicked(e)}
-          >
-            {v}
-          </PageNo>
-        )
-      })}
+      {pageNoArray.length === 0 ? (
+        <></>
+      ) : (
+        makePageNaviStringArray(pageNoArray, pageNavi.allPageNum).map((v, i) => {
+          const p: PageNoProps = {
+            bgColorHex: i + 1 === pageNavi.currentPageNo ? "e1f5fe" : "FFFFFF"
+          }
+          return (
+            <PageNo
+              {...p}
+              className={"page-no"}
+              key={i}
+              onClick={e => handlePageNoClicked(e)}
+            >
+              {v}
+            </PageNo>
+          )
+        })
+      )}
     </PageNaviArea>
   )
 }

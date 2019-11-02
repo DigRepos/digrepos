@@ -2,10 +2,16 @@ import React, { FC, useCallback } from "react"
 import { Dispatch } from "redux"
 import { useSelector, useDispatch } from "react-redux"
 import { AppState } from "../store"
-import { SearchFilterModel, RepositoryData, SortType } from "../../interfaces"
+import {
+  SearchFilterModel,
+  RepositoryData,
+  SortType,
+  PageNaviState
+} from "../../interfaces"
 import { setFilter } from "./action"
 import { updateRepositories } from "../Dashboard/action"
 import SearchFilter from "../../components/SearchFilter"
+import { updatePagenavi } from "../PageNavi/action"
 
 type Props = {
   updateDashboardState: (repos: RepositoryData[]) => void
@@ -34,6 +40,12 @@ const SearchFilterContainer: FC<Props> = props => {
     },
     [dispatch]
   )
+  const storePageNavi = useCallback(
+    (pageNavi: PageNaviState) => {
+      dispatch(updatePagenavi(pageNavi))
+    },
+    [dispatch]
+  )
   return (
     <SearchFilter
       model={searchFilter}
@@ -41,6 +53,7 @@ const SearchFilterContainer: FC<Props> = props => {
       updateSearchFilter={storeSearchFilter}
       updateRepositoryDatas={storeRepositoryDatas}
       updateDashboardState={props.updateDashboardState}
+      storePageNavi={storePageNavi}
     />
   )
 }
