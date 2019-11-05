@@ -4,9 +4,8 @@ import { PageNaviState } from "../../interfaces"
 import { numArray2StringArray } from "../../shared/helper"
 
 type Props = {
-  pageNaviState: PageNaviState
-  storePageNavi: (data: PageNaviState) => void
-  repositoryNum: number
+  pageNavi: PageNaviState
+  setNowPage: (now: number) => void
 }
 
 const PageNaviArea = styled.section`
@@ -53,8 +52,10 @@ const PageNavi: FC<Props> = props => {
       return [1, 2, 3, 4]
     }
   }
-  const [pageNavi, setPageNavi] = useState(props.pageNaviState)
-  const initialPageNoArray: number[] = makePageNoArray(pageNavi.allPageNum)
+
+  const initialPageNoArray: number[] = makePageNoArray(
+    props.pageNavi.allPageNum
+  )
   const [pageNoArray, setPageNoArray] = useState(initialPageNoArray)
   const MAX_LIMIT_PAGE_NUM = 4
 
@@ -107,7 +108,7 @@ const PageNavi: FC<Props> = props => {
     } else {
       if (numArray[0] === 1) {
         return [...numArray2StringArray(numArray), ">", ">>"]
-      } else if (numArray[numArray.length - 1] === pageNavi.allPageNum) {
+      } else if (numArray[numArray.length - 1] === props.pageNavi.allPageNum) {
         return ["<<", "<", ...numArray2StringArray(numArray)]
       } else {
         return ["<<", "<", ...numArray2StringArray(numArray), ">", ">>"]
@@ -120,13 +121,13 @@ const PageNavi: FC<Props> = props => {
     let pageNo: number = 0
     switch (pageNoText) {
       case ">":
-        pageNo = pageNavi.currentPageNo + 1
+        pageNo = props.pageNavi.currentPageNo + 1
         break
       case ">>":
-        pageNo = pageNavi.currentPageNo
+        pageNo = props.pageNavi.currentPageNo
         break
       case "<":
-        pageNo = pageNavi.currentPageNo - 1
+        pageNo = props.pageNavi.currentPageNo - 1
         break
       case "<<":
         pageNo = 1
@@ -134,10 +135,13 @@ const PageNavi: FC<Props> = props => {
       default:
         pageNo = Number(pageNoText)
     }
-    setPageNavi(Object.assign({}, pageNavi, { currentPageNo: pageNo }))
-    // props.setNowPage(pageNo)
+    // 遷移先のページ番号を設定する
+    props.setNowPage(pageNo)
     // 新たに作成したページ番号配列
-    const numArray: number[] = updatePageNoArray(Number(pageNo), pageNavi.allPageNum)
+    const numArray: number[] = updatePageNoArray(
+      Number(pageNo),
+      props.pageNavi.allPageNum
+    )
     setPageNoArray(numArray)
     scrollTo(0, 0)
   }
@@ -147,21 +151,24 @@ const PageNavi: FC<Props> = props => {
       {pageNoArray.length === 0 ? (
         <></>
       ) : (
-        makePageNaviStringArray(pageNoArray, pageNavi.allPageNum).map((v, i) => {
-          const p: PageNoProps = {
-            bgColorHex: i + 1 === pageNavi.currentPageNo ? "e1f5fe" : "FFFFFF"
+        makePageNaviStringArray(pageNoArray, props.pageNavi.allPageNum).map(
+          (v, i) => {
+            const p: PageNoProps = {
+              bgColorHex:
+                i + 1 === props.pageNavi.currentPageNo ? "e1f5fe" : "FFFFFF"
+            }
+            return (
+              <PageNo
+                {...p}
+                className={"page-no"}
+                key={i}
+                onClick={e => handlePageNoClicked(e)}
+              >
+                {v}
+              </PageNo>
+            )
           }
-          return (
-            <PageNo
-              {...p}
-              className={"page-no"}
-              key={i}
-              onClick={e => handlePageNoClicked(e)}
-            >
-              {v}
-            </PageNo>
-          )
-        })
+        )
       )}
     </PageNaviArea>
   )

@@ -2,9 +2,8 @@ import React, { FC, useCallback } from "react"
 import { Dispatch } from "redux"
 import { useSelector, useDispatch } from "react-redux"
 import { AppState } from "../store"
-import { RepositoryData, PageNaviState } from "../../interfaces"
+import { RepositoryData } from "../../interfaces"
 import { updateRepositories } from "./action"
-import { updatePagenavi } from "../PageNavi/action"
 import Dashboard from "../../components/Dashboard"
 
 const DashboardContainer: FC<{}> = () => {
@@ -16,23 +15,14 @@ const DashboardContainer: FC<{}> = () => {
     repositorySelector
   )
 
-  const pageNaviSelector = (state: AppState): PageNaviState =>
-    state.pageNaviReducer
-  const pageNavi = useSelector<AppState, PageNaviState>(pageNaviSelector)
   const storeRepositories = useCallback(
     (data: RepositoryData[]) => {
       dispatch(updateRepositories(data))
     },
     [dispatch]
   )
-  const storePageNavi = useCallback(
-    (pageNavi: PageNaviState) => {
-      dispatch(updatePagenavi(pageNavi))
-    },
-    [dispatch]
-  )
 
-  const props = { repositories, storeRepositories, pageNavi, storePageNavi }
+  const props = { repositories, storeRepositories }
 
   return <Dashboard {...props} />
 }

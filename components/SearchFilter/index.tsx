@@ -1,14 +1,8 @@
 import React, { FC, useState, useEffect } from "react"
 import styled from "../../interfaces/styled-theme"
-import {
-  RepositoryData,
-  SearchFilterModel,
-  SortType,
-  PageNaviState
-} from "../../interfaces"
+import { RepositoryData, SearchFilterModel, SortType } from "../../interfaces"
 import { searchRepositories } from "../../api"
-import { fnSortFactory, computeAllPageNum } from "../../shared/helper"
-import { PER_PAGE_NUM } from '../../shared/constants'
+import { fnSortFactory } from "../../shared/helper"
 
 const SearchKey = styled.div`
   font-weight: bold;
@@ -65,7 +59,7 @@ type Props = {
   updateSearchFilter: (current: SearchFilterModel) => void
   updateRepositoryDatas: (fetched: RepositoryData[]) => void
   updateDashboardState: (repos: RepositoryData[]) => void
-  storePageNavi: (pageNavi: PageNaviState) => void
+  initUpdatePageNavi: (repoLength: number) => void
 }
 
 const SearchFilter: FC<Props> = props => {
@@ -110,6 +104,7 @@ const SearchFilter: FC<Props> = props => {
     setState(Object.assign({}, state, data))
   }
 
+  // ソートを指定順に適用
   const sort = (datas: RepositoryData[]): RepositoryData[] => {
     const sortOrder = props.sortOrder.reverse()
     const fnSortArray = sortOrder.map(v => fnSortFactory(v))
@@ -123,15 +118,12 @@ const SearchFilter: FC<Props> = props => {
   const searchButtonClickedHandler = async () => {
     props.updateSearchFilter(state)
     const datas: RepositoryData[] = await searchRepositories("/filter", state)
-    console.log("fetched repository datas", datas)
+    console.log("repository list", datas)
     const repos = sort(datas)
     props.updateRepositoryDatas(repos)
     props.updateDashboardState(repos)
     // ページナビゲーションの更新
-    props.storePageNavi({
-      currentPageNo: 1,
-      allPageNum: computeAllPageNum(repos.length, PER_PAGE_NUM)
-    })
+    props.initUpdatePageNavi(repos.length)
   }
 
   return (

@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from "react"
 import RepositoryList from "./RepositoryList"
-import PageNavi from "../containers/PageNavi"
+import PageNavi from "./PageNavi"
 import {
   RepositoryData,
   ModalStyle,
@@ -14,7 +14,6 @@ import SearchFilter from "../containers/SearchFilter"
 import TabNavigation from "./TabNavigation"
 import SortablePanel from "../containers/Sort"
 import { PER_PAGE_NUM } from "../shared/constants"
-import { computeAllPageNum } from "../shared/helper"
 
 const DashboardOutline = styled.div`
   width: 90%;
@@ -69,14 +68,6 @@ const ButtonLabel = styled.p`
 type Props = {
   repositories: RepositoryData[]
   storeRepositories: (data: RepositoryData[]) => void
-  pageNavi: PageNaviState
-  storePageNavi: (pageNavi: PageNaviState) => void
-}
-
-type Pagenation = {
-  pageNo: number
-  perPage: number
-  allPageNum: number
 }
 
 const initialModalSetting: {
@@ -95,40 +86,57 @@ const initialModalSetting: {
   }
 }
 
+// PageNavi初期値
+const initialPageNavi: PageNaviState = {
+  currentPageNo: 1,
+  allPageNum: 5
+}
+
 const Dashboard: FC<Props> = props => {
   const [repos, setRepos] = useState(props.repositories)
-
-  // const initPagenation = {
-  //   pageNo: 1,
-  //   perPage: PER_PAGE,
-  //   allPageNum: computeAllPageNum(repos.length, PER_PAGE)
-  // }
-  // const [pagenation, setPagenation] = useState(initPagenation)
+  const [pageNavi, setPageNavi] = useState(initialPageNavi)
   const [modalState, setModalState] = useState(initialModalSetting)
 
-  // const setNowPage = (now: number): void => {
-  //   setPagenation(
-  //     Object.assign({}, pagenation, {
-  //       pageNo: now
-  //     })
-  //   )
-  // }
+  // 全ページ数計算
+  function computeAllPageNum(repoLength: number, perPage: number): number {
+    console.log("[computeAllPageNum] repoLength", repoLength)
+    const split = Math.floor(repoLength / perPage)
+    const syou = repoLength % perPage
+    if (syou > 0) {
+      return split + 1
+    }
+    return split
+  }
 
+  // 指定のページ番号に更新する
+  const setNowPage = (now: number): void => {
+    setPageNavi(
+      Object.assign({}, pageNavi, {
+        currentPageNo: now
+      })
+    )
+  }
+
+  const initUpdatePageNavi = (reposLength: number): void => {
+    setPageNavi({
+      currentPageNo: 1,
+      allPageNum: computeAllPageNum(reposLength, PER_PAGE_NUM)
+    })
+  }
+
+  // 初期表示時に、リポジトリ情報を取得する
   useEffect(() => {
     ;(async () => {
       const repos: RepositoryData[] = await fetchRepositoryList("/list")
       console.log(repos)
       props.storeRepositories(repos)
       setRepos(repos)
-      props.storePageNavi({
-        currentPageNo: 1,
-        allPageNum: computeAllPageNum(repos.length, PER_PAGE_NUM)
-      })
-      // setPagenation(
-      //   Object.assign({}, pagenation, {
-      //     allPageNum: computeAllPageNum(repos.length, pagenation.perPage)
-      //   })
-      // )
+      setPageNavi(
+        Object.assign({}, pageNavi, {
+          currentPageNo: 1,
+          allPageNum: computeAllPageNum(repos.length, PER_PAGE_NUM)
+        })
+      )
     })()
   }, [])
 
@@ -144,16 +152,6 @@ const Dashboard: FC<Props> = props => {
         idx >= startIdx + 1 && idx <= endMaxIdx
     )
   }
-
-  // const updateAndInitPageNavi = () => {
-  //   const pageNum = computeAllPageNum(repos.length, PER_PAGE)
-  //   console.log('updateAndInitPageNavi pageNum', pageNum)
-  //   setPagenation({
-  //     pageNo: 1,
-  //     perPage: PER_PAGE,
-  //     allPageNum: pageNum,
-  //   })
-  // }
 
   const openModal = () => {
     setModalState(Object.assign({}, modalState, { isShow: true }))
@@ -174,11 +172,9 @@ const Dashboard: FC<Props> = props => {
       </SearchFloatingButton>
       <Left></Left>
       <Center>
-        <RepositoryList repositoryDatas={paging(repos, props.pageNavi)} />
+        <RepositoryList repositoryDatas={paging(repos, pageNavi)} />
         <PageNaviWrapper>
-          <PageNavi
-            repositoryNum={computeAllPageNum(repos.length, PER_PAGE_NUM)}
-          />
+          <PageNavi pageNavi={pageNavi} setNowPage={setNowPage} />
         </PageNaviWrapper>
       </Center>
       <Right></Right>
@@ -192,6 +188,7 @@ const Dashboard: FC<Props> = props => {
                   updateDashboardState={(repos: RepositoryData[]) =>
                     setRepos(repos)
                   }
+                  initUpdatePageNavi={initUpdatePageNavi}
                 />
               )
             },
