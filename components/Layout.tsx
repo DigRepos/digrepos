@@ -6,6 +6,11 @@ type Props = {
   title?: string
 }
 
+const Outline = styled.div`
+  min-width: 900px;
+  overflow: scroll;
+`
+
 const HeaderWrapper = styled.header`
   position: fixed;
   display: flex;
@@ -17,8 +22,8 @@ const HeaderWrapper = styled.header`
   padding: 24px;
   border-bottom: solid;
   border-width: 0.8px;
-  border-color: #FFFFFF #FFFFFF #EEEEEE #FFFFFF;
-  background-color: #FFFFFF;
+  border-color: #ffffff #ffffff #eeeeee #ffffff;
+  background-color: #ffffff;
   z-index: 100;
 `
 
@@ -45,11 +50,8 @@ const Footer = styled.footer`
   height: 24px;
 `
 
-const Layout: React.FunctionComponent<Props> = ({
-  children,
-  title = "DigRepos"
-}) => (
-  <div>
+const Layout: React.FC<Props> = ({ children, title = "DigRepos" }) => (
+  <Outline>
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
@@ -58,7 +60,10 @@ const Layout: React.FunctionComponent<Props> = ({
         href="https://fonts.googleapis.com/css?family=Raleway:300&display=swap"
         rel="stylesheet"
       ></link>
-      <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet"></link>
+      <link
+        href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap"
+        rel="stylesheet"
+      ></link>
     </Head>
     <HeaderWrapper>
       <NavIcon>DigRepos</NavIcon>
@@ -66,9 +71,8 @@ const Layout: React.FunctionComponent<Props> = ({
     <Body>
       <BodyContent>{children}</BodyContent>
     </Body>
-    <Footer>
-    </Footer>
-  </div>
+    <Footer></Footer>
+  </Outline>
 )
 
 export default Layout
