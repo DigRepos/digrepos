@@ -70,17 +70,3 @@ export function fnSortFactory(type: SortType): fnSort {
 export function numArray2StringArray(numArray: number[]): string[] {
   return numArray.map(v => String(v))
 }
-
-// 全ページ数計算
-export function computeAllPageNum(repoLength: number, perPage: number): number {
-  console.log("[computeAllPageNum] repoLength", repoLength)
-  console.log("[computeAllPageNum] perPage", perPage)
-  const split = Math.floor(repoLength / perPage)
-  console.log("[computeAllPageNum] split", split)
-  const syou = repoLength % perPage
-  console.log("[computeAllPageNum] syou", syou)
-  if (syou > 0) {
-    return split + 1
-  }
-  return split
-}
