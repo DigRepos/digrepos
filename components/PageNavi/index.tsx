@@ -53,15 +53,13 @@ const PageNavi: FC<Props> = props => {
     }
   }
 
-  const initialPageNoArray: number[] = makePageNoArray(
-    props.pageNavi.allPageNum
+  const [pageNoArray, setPageNoArray] = useState(
+    makePageNoArray(props.pageNavi.allPageNum)
   )
-  const [pageNoArray, setPageNoArray] = useState(initialPageNoArray)
   const MAX_LIMIT_PAGE_NUM = 4
 
   // ページの表示番号を現在のページ位置から再設定する
   // ページ番号の押下時に見せるページネーションを再設定する
-  // TODO 実装が問題ないか確認する
   const updatePageNoArray = (
     nextPage: number,
     allPageNum: number
@@ -72,7 +70,7 @@ const PageNavi: FC<Props> = props => {
       nextPage <= pageNoArray[pageNoArray.length - 1]
     ) {
       // 現在表示されているページ番号に収まる移動の場合は、
-      // 同様Ïの配列を返す
+      // 同様の配列を返す
       return [...pageNoArray]
     } else {
       // 移動先のページ番号が、表示されていない（隠れている）
@@ -124,7 +122,7 @@ const PageNavi: FC<Props> = props => {
         pageNo = props.pageNavi.currentPageNo + 1
         break
       case ">>":
-        pageNo = props.pageNavi.currentPageNo
+        pageNo = props.pageNavi.allPageNum
         break
       case "<":
         pageNo = props.pageNavi.currentPageNo - 1
