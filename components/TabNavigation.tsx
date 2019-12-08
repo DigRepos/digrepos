@@ -86,4 +86,4 @@ const TabNavigation: FC<Props> = props => {
   )
 }
 
-export default TabNavigation
+export default React.memo(TabNavigation)

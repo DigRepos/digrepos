@@ -68,4 +68,4 @@ const SortablePanel: FC<Props> = props => {
   )
 }
 
-export default SortablePanel
+export default React.memo(SortablePanel)
