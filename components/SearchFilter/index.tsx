@@ -65,6 +65,7 @@ type Props = {
 const SearchFilter: FC<Props> = props => {
   const [state, setState] = useState(props.model)
 
+  // TODO 何やってる？？
   useEffect(() => {
     return () => {
       props.updateSearchFilter(state)
@@ -106,7 +107,7 @@ const SearchFilter: FC<Props> = props => {
 
   // ソートを指定順に適用
   const sort = (datas: RepositoryData[]): RepositoryData[] => {
-    const sortOrder = props.sortOrder.reverse()
+    const sortOrder = ([] as SortType[]).concat(props.sortOrder).reverse()
     const fnSortArray = sortOrder.map(v => fnSortFactory(v))
     let sorted: RepositoryData[] = datas
     for (const fnSort of fnSortArray) {
@@ -115,6 +116,7 @@ const SearchFilter: FC<Props> = props => {
     return sorted
   }
 
+  // 検索ボタン押下時イベント
   const searchButtonClickedHandler = async () => {
     props.updateSearchFilter(state)
     const datas: RepositoryData[] = await searchRepositories("/filter", state)
