@@ -1,5 +1,5 @@
 import axios from "axios"
-import qs from 'qs'
+import qs from "qs"
 import { RepositoryData, SearchFilterModel } from "../interfaces"
 
 const instance = axios.create({
@@ -26,8 +26,11 @@ export function fetchRepositoryList(
   })
 }
 
-export function searchRepositories(endpoint: string, filter: SearchFilterModel): Promise<RepositoryData[]> {
-  const url = endpoint + '?' + qs.stringify(filter)
+export function searchRepositories(
+  endpoint: string,
+  filter: SearchFilterModel
+): Promise<RepositoryData[]> {
+  const url = endpoint + "?" + qs.stringify(filter)
   return new Promise<RepositoryData[]>((resolve, reject) => {
     instance
       .get(url)

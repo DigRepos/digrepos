@@ -107,6 +107,8 @@ const SearchFilter: FC<Props> = props => {
 
   // ソートを指定順に適用
   const sort = (datas: RepositoryData[]): RepositoryData[] => {
+    // ストアに保存されているデータを直接参照していると、ストアのデータまで
+    // 反転してしまうため、concatでdeepcopyしてから使用
     const sortOrder = ([] as SortType[]).concat(props.sortOrder).reverse()
     const fnSortArray = sortOrder.map(v => fnSortFactory(v))
     let sorted: RepositoryData[] = datas
