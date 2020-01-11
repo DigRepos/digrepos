@@ -1,4 +1,6 @@
 import React, { FC, useState, useEffect } from "react"
+import { useQuery } from "@apollo/react-hooks"
+import { SEARCH_REPOSITORY } from "../shared/gql-query"
 import RepositoryList from "./RepositoryList"
 import PageNavi from "./PageNavi"
 import {
@@ -93,9 +95,25 @@ const initialPageNavi: PageNaviState = {
 }
 
 const Dashboard: FC<Props> = props => {
+
   const [repos, setRepos] = useState(props.repositories)
   const [pageNavi, setPageNavi] = useState(initialPageNavi)
   const [modalState, setModalState] = useState(initialModalSetting)
+
+  // TODO 初回設定のクエリを取得する。
+  const defaultQueryGen = (): string => {
+    return "GitHub+Octocat+in:readme+user:defunkt"
+  }
+
+  // コンポーネント生成時にクエリ実行する
+  const { loading, error, data } = useQuery(SEARCH_REPOSITORY, { 
+    variables: { query: defaultQueryGen() }
+  })
+
+  if (!loading) {
+    console.log("fetch done!", data)
+  }
+  
 
   // 全ページ数計算
   function computeAllPageNum(repoLength: number, perPage: number): number {
