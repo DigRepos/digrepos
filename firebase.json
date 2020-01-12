@@ -1,0 +1,24 @@
+{
+  "functions": {
+    "predeploy": [
+      "npm run lint-functions",
+      "npm run build-functions",
+      "npm run build",
+      "npm run copy-deps",
+      "npm run install-deps"
+    ],
+    "source": "dist/functions"
+  },
+  "hosting": {
+    "public": "public",
+    "rewrites": [{
+      "source": "**/**",
+      "function": "nextApp"
+    }],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
