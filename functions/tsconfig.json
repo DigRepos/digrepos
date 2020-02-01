@@ -1,18 +1,17 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "noUnusedLocals": true,
-    "outDir": "../../dist/functions",
-    "sourceMap": true,
+    "outDir": "../dist/functions",
     "strict": true,
-    "target": "es2018",
-    "types": ["react"]
+    "target": "esnext",
+    "types": ["node"]
   },
   "compileOnSave": true,
   "include": [
-    "src"
-  ]
+    "src/"
+  ],
+  "exclude": ["node_modules"]
 }

@@ -1,8 +1,10 @@
 import * as functions from "firebase-functions"
 import next from "next"
+import * as path from "path"
 
-const dev = process.env.NODE_ENV !== "production"
-const app = next({ dev, conf: { distDirs: "next" } })
+let dev = process.env.NODE_ENV !== "production"
+dev = false
+const app = next({ dev, conf: { distDirs: `${path.relative(process.cwd(), __dirname)}/.next` } })
 const handle = app.getRequestHandler()
 
 export const nextApp = functions.https.onRequest((req, res) => {
