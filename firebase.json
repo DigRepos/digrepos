@@ -4,6 +4,7 @@
       "npm run lint-functions",
       "npm run build-functions",
       "npm run build",
+      "cp -r .next dist/functions/",
       "npm run copy-deps",
       "npm run install-deps"
     ],
