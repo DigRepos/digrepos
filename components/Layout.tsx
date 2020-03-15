@@ -1,6 +1,9 @@
-import * as React from "react"
+import React, { useEffect } from "react"
+import { useRouter } from "next/router"
 import Head from "next/head"
 import styled from "../interfaces/styled-theme"
+import "firebase/auth"
+import firebaseApp from "../shared/firebaseApp"
 
 type Props = {
   title?: string
@@ -50,29 +53,38 @@ const Footer = styled.footer`
   height: 24px;
 `
 
-const Layout: React.FC<Props> = ({ children, title = "DigRepos" }) => (
-  <Outline>
-    <Head>
-      <title>{title}</title>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      <link
-        href="https://fonts.googleapis.com/css?family=Raleway:300&display=swap"
-        rel="stylesheet"
-      ></link>
-      <link
-        href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap"
-        rel="stylesheet"
-      ></link>
-    </Head>
-    <HeaderWrapper>
-      <NavIcon>DigRepos</NavIcon>
-    </HeaderWrapper>
-    <Body>
-      <BodyContent>{children}</BodyContent>
-    </Body>
-    <Footer></Footer>
-  </Outline>
-)
+const Layout: React.FC<Props> = ({ children, title = "DigRepos" }) => {
+  const router = useRouter()
+  useEffect(() => {
+    console.log(firebaseApp.auth().currentUser)
+    if (!firebaseApp.auth().currentUser) {
+      router.push("/login")
+    }
+  })
+  return (
+    <Outline>
+      <Head>
+        <title>{title}</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <link
+          href="https://fonts.googleapis.com/css?family=Raleway:300&display=swap"
+          rel="stylesheet"
+        ></link>
+        <link
+          href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap"
+          rel="stylesheet"
+        ></link>
+      </Head>
+      <HeaderWrapper>
+        <NavIcon>DigRepos</NavIcon>
+      </HeaderWrapper>
+      <Body>
+        <BodyContent>{children}</BodyContent>
+      </Body>
+      <Footer></Footer>
+    </Outline>
+  )
+}
 
 export default Layout
