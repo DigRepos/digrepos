@@ -1,15 +1,19 @@
 import * as React from "react"
 import { NextPage } from "next"
 import Head from "next/head"
-import SigninButton from "../components/OAuthButton"
+import OAuthButton from "../components/OAuthButton/container"
+import { Provider } from "react-redux"
+import { store } from "../containers/store"
 
 const LoginPage: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>Digrepos</title>
-      </Head>
-      <SigninButton />
+      <Provider store={store}>
+        <Head>
+          <title>Digrepos</title>
+        </Head>
+        <OAuthButton />
+      </Provider>
     </>
   )
 }
