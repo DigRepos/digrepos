@@ -54,3 +54,8 @@ export type PageNaviState = {
   currentPageNo: number
   allPageNum: number
 }
+
+export type User = {
+  userName: string,
+  accessToken: string
+}

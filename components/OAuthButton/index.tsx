@@ -2,8 +2,13 @@ import * as React from "react"
 import { useRouter } from "next/router"
 import firebase from "firebase"
 import firebaseApp from "../../shared/firebaseApp"
+import { User } from "../../interfaces"
 
-const OAuthButton: React.FC<{}> = () => {
+type Props = {
+  userSetDispatcher: (user: User) => void
+}
+
+const OAuthButton: React.FC<Props> = props => {
   const router = useRouter()
 
   const buttonClicked = (e: React.MouseEvent<HTMLElement>) => {
@@ -14,8 +19,15 @@ const OAuthButton: React.FC<{}> = () => {
       .signInWithPopup(provider)
       .then(result => {
         const { credential, additionalUserInfo } = result
-        console.log(credential)
-        console.log(additionalUserInfo)
+        // credentialの型情報に'accessToken'プロパティが含まれず、
+        // コンパイルが通らないので応急措置のany
+        const c = credential as any
+        props.userSetDispatcher({
+          userName: !additionalUserInfo
+            ? ""
+            : additionalUserInfo.username || "",
+          accessToken: !c ? "" : c.accessToken || ""
+        })
         router.push("/")
       })
       .catch(error => {
