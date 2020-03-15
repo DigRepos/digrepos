@@ -1,5 +1,7 @@
 node_modules
 .next
+.env
 dist/
+out/
 yarn-error.log
 storybook-static
