@@ -11,7 +11,7 @@
     "source": "dist/functions"
   },
   "hosting": {
-    "public": "public",
+    "public": "out",
     "rewrites": [{
       "source": "**/**",
       "function": "nextApp"
