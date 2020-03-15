@@ -12,8 +12,6 @@
     "copy-deps": "cpx \"*{package.json,package-lock.json,yarn.lock}\" \"dist/functions\" -C",
     "install-deps": "cd \"dist/functions\" && npm i",
     "type-check": "tsc",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
     "test": "jest",
     "snapshot": "jest --updateSnapshot",
     "deploy": "firebase deploy --only hosting",
@@ -55,12 +53,6 @@
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^5.1.11",
-    "@storybook/addon-info": "^5.1.11",
-    "@storybook/addon-links": "^5.1.11",
-    "@storybook/addons": "^5.1.11",
-    "@storybook/preset-typescript": "^1.1.0",
-    "@storybook/react": "^5.1.11",
     "@types/enzyme": "^3.10.3",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/firebase": "^3.2.1",
